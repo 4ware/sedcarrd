@@ -1,9 +1,5 @@
 import type { FC } from "react";
 
-interface LogoProps {
-  propName: type;
-}
-
-export const Logo: FC<LogoProps> = ({ propName }) => {
+export const Logo: FC = () => {
   return <div>Logo</div>;
 };
