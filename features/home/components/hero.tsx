@@ -1,10 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { TextEffect } from "@/components/motion-primitives/text-effect";
-import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
+import { TextEffect } from "@/components/ui/text-effect";
+import { AnimatedGroup } from "@/components/ui/animated-group";
 
 const transitionVariants = {
   item: {
@@ -18,7 +17,7 @@ const transitionVariants = {
       filter: "blur(0px)",
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         bounce: 0.3,
         duration: 1.5,
       },
@@ -48,7 +47,7 @@ export default function Hero() {
                 opacity: 1,
                 y: 0,
                 transition: {
-                  type: "spring",
+                  type: "spring" as const,
                   bounce: 0.3,
                   duration: 2,
                 },
@@ -56,7 +55,9 @@ export default function Hero() {
             },
           }}
           className="mask-b-from-35% mask-b-to-90% absolute inset-0 top-56 -z-20 lg:top-32"
-        ></AnimatedGroup>
+        >
+          {" "}
+        </AnimatedGroup>
 
         <div
           aria-hidden
@@ -159,7 +160,9 @@ export default function Hero() {
             },
             ...transitionVariants,
           }}
-        ></AnimatedGroup>
+        >
+          {" "}
+        </AnimatedGroup>
       </div>
     </section>
   );
