@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { HeroHeader } from "./header";
+import Footer from "./footer";
 
 interface HomeLayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ export const HomeLayout: FC<HomeLayoutProps> = ({ children }) => {
         </div>
         {children}
       </main>
+      <Footer />
     </>
   );
 };
