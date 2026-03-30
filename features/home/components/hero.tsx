@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 
-const transitionVariants = {
+export const transitionVariants = {
   item: {
     hidden: {
       opacity: 0,
