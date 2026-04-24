@@ -1,4 +1,4 @@
-import LoginLayout from "@/components/layouts/LoginLayout";
+import LoginLayout from "./components/LoginLayout";
 import type { FC } from "react";
 import LoginForm from "./forms/LoginForm";
 

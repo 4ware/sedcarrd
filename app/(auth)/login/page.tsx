@@ -1,4 +1,3 @@
-import LoginLayout from "@/components/layouts/LoginLayout";
 import LoginPage from "@/features/auth/LoginPage";
 import type { FC } from "react";
 
