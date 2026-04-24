@@ -1,18 +1,13 @@
-import type { FC, ReactNode } from "react";
+import React from 'react'
 
-interface AuthLayoutProps {
-  children: ReactNode;
+interface AuthLayouttProps {
+  children: React.ReactNode;
 }
 
-const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
+export default function AuthLayout({ children }: AuthLayouttProps) {
   return (
-    <section className="h-screen w-screen flex flex-row">
-      <div className="w-1/2 h-screen bg-amber-200">r</div>
-      <div className="h-screen w-1/2 flex items-center justify-center">
-        {children}
-      </div>
-    </section>
-  );
-};
-
-export default AuthLayout;
+    <div className='h-screen w-screen flex items-center justify-center'>
+      {children}
+    </div>
+  )
+}
