@@ -1,10 +1,10 @@
 import React from 'react'
 
-interface AuthLayouttProps {
+interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
-export default function AuthLayout({ children }: AuthLayouttProps) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className='h-screen w-screen flex items-center justify-center'>
       {children}
