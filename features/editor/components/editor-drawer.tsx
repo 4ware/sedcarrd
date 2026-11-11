@@ -25,17 +25,17 @@ type EditorDrawerProps = {
   /** The last save attempt failed. */
   saveFailed?: boolean;
   theme: ThemeKey;
+  /** Saves the theme right away. */
   onThemeChange: (theme: ThemeKey) => void;
-  onSaveTheme: () => void;
   savingTheme: boolean;
   personId: string;
   images: PersonImageView[];
 };
 
 /**
- * Left drawer. Non-modal: the page stays visible (no overlay) and previews every change live.
- * "Done" saves and closes (only when valid and saved); the close button and Escape close without
- * saving; clicking the page does not close it.
+ * Left drawer. Non-modal: the page stays visible (no overlay) and shows every change live.
+ * Fields: "Done" saves and closes (only when valid and saved); the close button and Escape close
+ * without saving. Photos and the theme are saved immediately. Clicking the page does not close it.
  */
 export function EditorDrawer(props: EditorDrawerProps) {
   const { form, panel, onClose, returnFocusRef, saveFailed } = props;
@@ -103,7 +103,8 @@ export function EditorDrawer(props: EditorDrawerProps) {
         </div>
         <SheetFooter className="border-t px-6 py-4">
           {isTheme ? (
-            <DoneButton pending={props.savingTheme} onClick={props.onSaveTheme} label={t("done")} />
+            // The theme is saved when picked; "Done" closes once the last pick is stored.
+            <DoneButton pending={props.savingTheme} onClick={onClose} label={t("done")} />
           ) : isPhotos ? (
             // Photos are saved as they are uploaded or deleted; "Done" just closes.
             <DoneButton pending={false} onClick={onClose} label={t("done")} />

@@ -2,19 +2,14 @@
   "metaTitle": "Editor — Sedcarrd",
   "canvas": {
     "label": "Your page",
-    "edit": "Edit {section}",
-    "namePlaceholder": "Your name",
-    "aboutPlaceholder": "Professions, year and place of birth",
-    "basics": "Basic data",
-    "born": "{hasYear, select, yes {Born {year}} other {Born}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} years)} other {}}",
-    "photosPlaceholder": "Add photos",
-    "photoAlt": "{name}, photo {index}"
+    "edit": "Edit {section}"
   },
   "toolbar": {
     "label": "Editor",
     "edit": "Edit name",
     "dashboard": "Back to the dashboard",
-    "theme": "Change theme"
+    "theme": "Change theme",
+    "publicPage": "View public page (new tab)"
   },
   "drawer": {
     "eyebrowHeader": "Profile",
@@ -27,7 +22,7 @@
       "skills": "Languages, singing, dance, sports and licences.",
       "location": "Where the person works and lives.",
       "appearance": "Height, build and looks for casting.",
-      "theme": "Pick a look for the page. It is previewed right away and saved with “Done”.",
+      "theme": "Pick a look for the page. It is saved right away and used on the public page.",
       "photos": "Photos are saved as soon as they are uploaded."
     },
     "eyebrowDesign": "Design",

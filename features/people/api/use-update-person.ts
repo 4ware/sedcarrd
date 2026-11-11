@@ -17,7 +17,11 @@ export function useUpdatePerson(id: string) {
     mutationFn: (input: UpdatePersonInput) => unwrap(api.people({ id }).patch(input)),
     onSuccess: (person) => {
       queryClient.setQueryData(peopleKeys.detail(id), person);
-      return queryClient.invalidateQueries({ queryKey: peopleKeys.list() });
+      // The list and any cached public page show this person too.
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: peopleKeys.list() }),
+        queryClient.invalidateQueries({ queryKey: [...peopleKeys.all, "public"] }),
+      ]);
     },
   });
 }

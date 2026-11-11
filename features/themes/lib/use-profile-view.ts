@@ -10,7 +10,7 @@ import {
   personSections,
   splitList,
 } from "@/features/people";
-import type { ProfileView } from "@/features/themes";
+import type { ProfileView } from "./types";
 
 const UNITS: Partial<Record<PersonFieldName, string>> = { heightCm: "cm", weightKg: "kg" };
 const isList = (field: PersonFieldName) => (LIST_FIELDS as readonly string[]).includes(field);
@@ -23,9 +23,12 @@ function display(field: PersonFieldName, value: string) {
   return UNITS[field] ? `${trimmed} ${UNITS[field]}` : trimmed;
 }
 
-/** The live form values as a theme-ready, translated profile. */
+/**
+ * A person (as form values: the editor's live values, or `toPersonFieldsValues(person)`) as a
+ * theme-ready, translated profile. Used by the editor and the public person page alike.
+ */
 export function useProfileView(values: PersonFieldsValues, images: PersonImageView[] = []): ProfileView {
-  const t = useTranslations("Editor.canvas");
+  const t = useTranslations("Themes.profile");
   const tPeople = useTranslations("People");
 
   const year = /^\d{4}$/.test(values.birthYear.trim()) ? Number(values.birthYear) : null;

@@ -54,7 +54,7 @@ test("a person opens from the dashboard in the editor, loaded and editable", asy
   await skills.getByRole("button", { name: "Fertig" }).click();
   await expect(skills).toBeHidden();
 
-  // Theme: previewed while picking, saved with "Fertig".
+  // Theme: shown and saved as soon as it is picked.
   const toolbar = page.getByRole("navigation", { name: "Editor" });
   await toolbar.getByRole("button", { name: "Design ändern" }).click();
   const design = page.getByRole("dialog", { name: "Design" });
@@ -74,6 +74,7 @@ test("a person opens from the dashboard in the editor, loaded and editable", asy
     await page.screenshot({ path: `test-results/theme-${key}.png`, animations: "disabled", fullPage: true });
     await drawerElement?.evaluate((el) => (el as HTMLElement).style.removeProperty("visibility"));
   }
+  // Saved on pick; "Fertig" just closes.
   await design.locator("label", { hasText: "Abendrot" }).click();
   await design.getByRole("button", { name: "Fertig" }).click();
   await expect(design).toBeHidden();
