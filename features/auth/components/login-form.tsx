@@ -37,7 +37,7 @@ export function LoginForm() {
       <FieldGroup>
         <FormError message={errorKey ? t(`errors.${errorKey}`) : null} />
         <EmailField />
-        <PasswordField />
+        <PasswordField variant="current" />
         <SubmitButton pending={signIn.isPending}>{t("login.submit")}</SubmitButton>
       </FieldGroup>
     </form>

@@ -22,7 +22,10 @@
     "email": "E-Mail",
     "emailPlaceholder": "du@beispiel.de",
     "password": "Passwort",
-    "passwordHint": "Mindestens 8 Zeichen."
+    "passwordHint": "Mindestens 8 Zeichen.",
+    "passwordConfirm": "Passwort wiederholen",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen"
   },
   "errors": {
     "invalidCredentials": "E-Mail oder Passwort ist falsch.",
@@ -31,6 +34,7 @@
     "passwordTooShort": "Dein Passwort braucht mindestens 8 Zeichen.",
     "passwordTooLong": "Dein Passwort darf höchstens 128 Zeichen haben.",
     "tooManyRequests": "Zu viele Versuche. Bitte warte einen Moment und versuche es erneut.",
-    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein."
   }
 }

@@ -17,7 +17,8 @@ test("sign up, log out from the sidebar menu, log back in", async ({ page }) => 
   await page.goto("/signup");
   await page.getByLabel("Name").fill("Mara Ellison");
   await page.getByLabel("E-Mail").fill(email);
-  await page.getByLabel("Passwort").fill(password);
+  await page.getByLabel("Passwort", { exact: true }).fill(password);
+  await page.getByLabel("Passwort wiederholen").fill(password);
   await page.getByRole("button", { name: "Konto erstellen" }).click();
 
   await expect(page).toHaveURL(/\/dashboard$/);
@@ -40,11 +41,11 @@ test("sign up, log out from the sidebar menu, log back in", async ({ page }) => 
 
   // Wrong password → message, right password → dashboard
   await page.getByLabel("E-Mail").fill(email);
-  await page.getByLabel("Passwort").fill("definitely-wrong");
+  await page.getByLabel("Passwort", { exact: true }).fill("definitely-wrong");
   await page.getByRole("button", { name: "Anmelden" }).click();
   await expect(page.getByRole("alert")).toContainText("E-Mail oder Passwort ist falsch.");
 
-  await page.getByLabel("Passwort").fill(password);
+  await page.getByLabel("Passwort", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Anmelden" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
 });
@@ -68,7 +69,8 @@ test("the landing page links to log in and sign up, and to the dashboard once si
 
   await page.getByLabel("Name").fill("Landing Visitor");
   await page.getByLabel("E-Mail").fill(uniqueEmail());
-  await page.getByLabel("Passwort").fill(password);
+  await page.getByLabel("Passwort", { exact: true }).fill(password);
+  await page.getByLabel("Passwort wiederholen").fill(password);
   await page.getByRole("button", { name: "Konto erstellen" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
 
@@ -76,4 +78,31 @@ test("the landing page links to log in and sign up, and to the dashboard once si
   await expect(page.getByRole("link", { name: "Anmelden" })).toHaveCount(0);
   await page.getByRole("link", { name: "Zum Dashboard" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+});
+
+test("sign-up rejects mismatching passwords before calling the server", async ({ page }) => {
+  await page.goto("/signup");
+  await page.getByLabel("Name").fill("Mismatch");
+  await page.getByLabel("E-Mail").fill(uniqueEmail());
+  await page.getByLabel("Passwort", { exact: true }).fill(password);
+  await page.getByLabel("Passwort wiederholen").fill(`${password}!`);
+  await page.getByRole("button", { name: "Konto erstellen" }).click();
+
+  await expect(page.getByText("Die Passwörter stimmen nicht überein.")).toBeVisible();
+  await expect(page.getByLabel("Passwort wiederholen")).toBeFocused();
+  await expect(page).toHaveURL(/\/signup$/);
+});
+
+test("the eye icon shows the password as plain text and hides it again", async ({ page }) => {
+  await page.goto("/login");
+  const input = page.getByLabel("Passwort", { exact: true });
+  await input.fill("visible-secret");
+  await expect(input).toHaveAttribute("type", "password");
+
+  await page.getByRole("button", { name: "Passwort anzeigen" }).click();
+  await expect(input).toHaveAttribute("type", "text");
+  await expect(input).toHaveValue("visible-secret");
+
+  await page.getByRole("button", { name: "Passwort verbergen" }).click();
+  await expect(input).toHaveAttribute("type", "password");
 });
