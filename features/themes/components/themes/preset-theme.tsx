@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { type ProfileView, type SectionSlot, type ThemeProps, themeVars } from "../../lib/types";
+import { PhotoGallery } from "../photo-gallery";
 import type { ThemePreset } from "./presets";
 
 type BlockProps = { profile: ProfileView; Section: SectionSlot; preset: ThemePreset };
@@ -85,6 +86,27 @@ function GroupBlock({
   );
 }
 
+/** The photos, in the preset's colours. `onColor`: drawn on a coloured surface. */
+function PhotosBlock({
+  profile,
+  Section,
+  preset,
+  columns,
+  className,
+}: BlockProps & { columns?: 2 | 3 | 4; className?: string }) {
+  return (
+    <Section section="photos" className={cn("p-1", className)}>
+      <PhotoGallery
+        images={profile.images}
+        placeholder={profile.placeholders.photos}
+        imageClassName={preset.photo ?? "rounded-lg"}
+        emptyClassName={cn("border-current/25", preset.faint)}
+        columns={columns}
+      />
+    </Section>
+  );
+}
+
 function BasicsTitle({ profile, preset, className }: { profile: ProfileView; preset: ThemePreset; className?: string }) {
   return <h2 className={cn(preset.label, className)}>{profile.basicsTitle}</h2>;
 }
@@ -106,6 +128,9 @@ export function PresetTheme({ preset, profile, Section }: ThemeProps & { preset:
             <NameBlock {...blocks} />
             <AboutBlock {...blocks} className="items-center" centered />
           </header>
+          <div className="px-5 pb-8 sm:px-8">
+            <PhotosBlock {...blocks} columns={2} />
+          </div>
           <section className="flex flex-col gap-4 border-t border-current/10 px-6 py-10 sm:px-10">
             <BasicsTitle profile={profile} preset={preset} className="mb-2 text-center" />
             {groups}
@@ -118,6 +143,7 @@ export function PresetTheme({ preset, profile, Section }: ThemeProps & { preset:
             <NameBlock {...blocks} />
             <AboutBlock {...blocks} className="max-w-2xl" />
           </header>
+          <PhotosBlock {...blocks} columns={4} />
           <section className="flex flex-col gap-5">
             <BasicsTitle profile={profile} preset={preset} className="px-2" />
             <div className="grid gap-4 md:grid-cols-3">{groups}</div>
@@ -129,6 +155,7 @@ export function PresetTheme({ preset, profile, Section }: ThemeProps & { preset:
           <header className="flex flex-col justify-center gap-6 px-6 py-12 sm:px-10">
             <NameBlock {...blocks} />
             <AboutBlock {...blocks} />
+            <PhotosBlock {...blocks} columns={2} className="mt-4" />
           </header>
           <section className={cn("flex flex-col gap-4 p-5 sm:p-8", preset.panel)}>
             <BasicsTitle profile={profile} preset={preset} className="px-1" />
@@ -142,6 +169,7 @@ export function PresetTheme({ preset, profile, Section }: ThemeProps & { preset:
             <NameBlock {...blocks} />
             <AboutBlock {...blocks} />
           </header>
+          <PhotosBlock {...blocks} columns={4} />
           <section className="flex flex-col gap-8">
             <BasicsTitle profile={profile} preset={preset} className="px-2" />
             <div className="grid gap-10 md:grid-cols-3">{groups}</div>
@@ -154,6 +182,9 @@ export function PresetTheme({ preset, profile, Section }: ThemeProps & { preset:
             <NameBlock {...blocks} onColor />
             <AboutBlock {...blocks} onColor />
           </header>
+          <div className="px-3 pt-6 sm:px-6">
+            <PhotosBlock {...blocks} />
+          </div>
           <section className="flex flex-col gap-5 px-3 pt-6 pb-4 sm:px-6">
             <BasicsTitle profile={profile} preset={preset} className="px-1" />
             <div className="grid gap-4 md:grid-cols-3">{groups}</div>

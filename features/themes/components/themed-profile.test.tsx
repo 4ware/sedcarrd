@@ -11,7 +11,11 @@ const profile: ProfileView = {
   born: "Geboren 1994 in Berlin (32 Jahre)",
   basicsTitle: "Basisdaten",
   emptyValue: "—",
-  placeholders: { name: "Dein Name", about: "Berufe, Geburtsjahr und -ort" },
+  images: [
+    { id: "i1", url: "https://example.com/1.jpg", alt: "Lena Vogt, Foto 1" },
+    { id: "i2", url: "https://example.com/2.jpg", alt: "Lena Vogt, Foto 2" },
+  ],
+  placeholders: { name: "Dein Name", about: "Berufe, Geburtsjahr und -ort", photos: "Fotos hinzufügen" },
   groups: [
     { key: "skills", title: "Fähigkeiten", rows: [{ label: "Sprachen", value: "Deutsch, Englisch" }] },
     { key: "location", title: "Ort & Nationalität", rows: [{ label: "Nationalität", value: "" }] },
@@ -36,6 +40,19 @@ describe.each(THEME_KEYS)("%s theme", (theme) => {
     expect(screen.getByTestId("section-location")).toHaveTextContent("—");
     expect(screen.getByTestId("section-appearance")).toHaveTextContent("grün");
     expect(screen.getByText("Basisdaten")).toBeInTheDocument();
+    const photos = within(screen.getByTestId("section-photos")).getAllByRole("img");
+    expect(photos.map((img) => img.getAttribute("alt"))).toEqual(["Lena Vogt, Foto 1", "Lena Vogt, Foto 2"]);
+    expect(photos[0]).toHaveAttribute("src", "https://example.com/1.jpg");
+  });
+
+  test("a single photo is shown large, none shows the placeholder", () => {
+    const { rerender } = render(
+      <ThemedProfile theme={theme} profile={{ ...profile, images: profile.images.slice(0, 1) }} Section={MarkedSection} />,
+    );
+    expect(within(screen.getByTestId("section-photos")).getAllByRole("img")).toHaveLength(1);
+
+    rerender(<ThemedProfile theme={theme} profile={{ ...profile, images: [] }} Section={MarkedSection} />);
+    expect(screen.getByTestId("section-photos")).toHaveTextContent("Fotos hinzufügen");
   });
 
   test("shows placeholders for an empty profile", () => {

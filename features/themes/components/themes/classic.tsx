@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { type ThemeProps, themeVars } from "../../lib/types";
+import { PhotoGallery } from "../photo-gallery";
 
 /** Klassisch: paper card on a muted page, serif name, Basisdaten in three columns. */
 export function ClassicTheme({ profile, Section }: ThemeProps) {
@@ -33,6 +34,15 @@ export function ClassicTheme({ profile, Section }: ThemeProps) {
             )}
           </Section>
         </header>
+
+        <Section section="photos" className="p-2">
+          <PhotoGallery
+            images={profile.images}
+            placeholder={profile.placeholders.photos}
+            imageClassName="rounded-md"
+            emptyClassName="border-border text-muted-foreground"
+          />
+        </Section>
 
         <section className="flex flex-col gap-8">
           <h2 className="font-serif text-2xl font-semibold">{profile.basicsTitle}</h2>

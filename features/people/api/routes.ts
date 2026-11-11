@@ -1,9 +1,14 @@
-import { and, asc, eq } from "drizzle-orm";
+import { deleteObject, headObject, presignGetObject } from "@better-upload/server/helpers";
+import { and, asc, count, eq, max } from "drizzle-orm";
 import { Elysia, t } from "elysia";
 import { THEME_KEYS } from "@/features/themes/registry";
+import type { Db } from "@/lib/db/client";
+import { getStorage } from "@/lib/storage/s3";
 import { authPlugin } from "@/server/plugins/auth";
 import { dbPlugin } from "@/server/plugins/db";
-import { person } from "../db/schema";
+import { person, personImage } from "../db/schema";
+import { IMAGE_TYPES, MAX_IMAGE_SIZE, MAX_IMAGES_PER_PERSON, MAX_IMAGES_PER_UPLOAD } from "../lib/images";
+import { personImagePrefix } from "./upload";
 
 const nonBlank = (maxLength: number) => t.String({ minLength: 1, maxLength, pattern: "\\S" });
 const optionalText = t.Nullable(t.String({ maxLength: 100 }));
@@ -49,8 +54,24 @@ export const PersonSummary = t.Object({
   workingLocation: t.Nullable(t.String()),
 });
 
-/** A person with every field and their theme (editor). */
-export const PersonDetail = t.Object({ id: t.String(), ...personFields, theme: Theme });
+/** An image with a short-lived signed URL (the bucket is private). */
+export const PersonImage = t.Object({ id: t.String(), name: t.String(), url: t.String() });
+
+/** A person with every field, their theme and images (editor). */
+export const PersonDetail = t.Object({
+  id: t.String(),
+  ...personFields,
+  theme: Theme,
+  images: t.Array(PersonImage),
+});
+
+/** Body of POST /people/:id/images: objects the browser just uploaded via /api/upload. */
+export const RegisterImages = t.Object({
+  images: t.Array(t.Object({ key: t.String({ minLength: 1, maxLength: 300 }), name: t.String({ minLength: 1, maxLength: 255 }) }), {
+    minItems: 1,
+    maxItems: MAX_IMAGES_PER_UPLOAD,
+  }),
+});
 
 /** Body of POST /people: the create form's fields. */
 export const CreatePerson = t.Object({
@@ -66,6 +87,35 @@ export const CreatePerson = t.Object({
 export const UpdatePerson = t.Partial(t.Object({ ...personFields, theme: Theme }), { minProperties: 1 });
 
 const PersonParams = t.Object({ id: t.String({ format: "uuid" }) });
+const ImageParams = t.Object({ id: t.String({ format: "uuid" }), imageId: t.String({ format: "uuid" }) });
+const SIGNED_URL_TTL = 60 * 60;
+
+/** A person's images in display order, each with a signed GET URL. */
+async function listImages(db: Db, personId: string) {
+  const rows = await db
+    .select({ id: personImage.id, name: personImage.name, key: personImage.key })
+    .from(personImage)
+    .where(eq(personImage.personId, personId))
+    .orderBy(asc(personImage.position), asc(personImage.createdAt));
+  if (rows.length === 0) return [];
+  const { client, bucket } = getStorage();
+  return Promise.all(
+    rows.map(async ({ id, name, key }) => ({
+      id,
+      name,
+      url: await presignGetObject(client, { bucket, key, expiresIn: SIGNED_URL_TTL }),
+    })),
+  );
+}
+
+/** The person if it belongs to the user. */
+async function findOwnPerson(db: Db, userId: string, personId: string) {
+  const [found] = await db
+    .select({ id: person.id })
+    .from(person)
+    .where(and(eq(person.id, personId), eq(person.userId, userId)));
+  return found;
+}
 const Message = t.Object({ message: t.String() });
 
 const summaryColumns = {
@@ -147,7 +197,8 @@ export const peopleRoutes = new Elysia({ name: "routes/people" })
         .from(person)
         .where(and(eq(person.id, params.id), eq(person.userId, user.id)));
       // Someone else's person is reported as missing, not forbidden.
-      return found ?? status(404, { message: "Person not found" });
+      if (!found) return status(404, { message: "Person not found" });
+      return { ...found, images: await listImages(db, found.id) };
     },
     {
       auth: true,
@@ -163,12 +214,72 @@ export const peopleRoutes = new Elysia({ name: "routes/people" })
         .set(body)
         .where(and(eq(person.id, params.id), eq(person.userId, user.id)))
         .returning(detailColumns);
-      return updated ?? status(404, { message: "Person not found" });
+      if (!updated) return status(404, { message: "Person not found" });
+      return { ...updated, images: await listImages(db, updated.id) };
     },
     {
       auth: true,
       params: PersonParams,
       body: UpdatePerson,
       response: { 200: PersonDetail, 401: Message, 404: Message },
+    },
+  )
+  .post(
+    "/people/:id/images",
+    async ({ db, user, params, body, status }) => {
+      if (!(await findOwnPerson(db, user.id, params.id))) return status(404, { message: "Person not found" });
+
+      const [existing] = await db.select({ n: count(), last: max(personImage.position) }).from(personImage).where(eq(personImage.personId, params.id));
+      if ((existing?.n ?? 0) + body.images.length > MAX_IMAGES_PER_PERSON) {
+        return status(422, { message: `At most ${MAX_IMAGES_PER_PERSON} images per person.` });
+      }
+
+      // Only objects that were really uploaded, under this person's prefix, as images.
+      const { client, bucket } = getStorage();
+      const prefix = personImagePrefix(params.id);
+      const checked = [];
+      for (const image of body.images) {
+        if (!image.key.startsWith(prefix)) return status(422, { message: "Invalid image key." });
+        const head = await headObject(client, { bucket, key: image.key }).catch(() => null);
+        if (!head) return status(422, { message: "Image was not uploaded." });
+        if (!(IMAGE_TYPES as string[]).includes(head.contentType) || head.contentLength > MAX_IMAGE_SIZE) {
+          await deleteObject(client, { bucket, key: image.key }).catch(() => {});
+          return status(422, { message: "Not an allowed image." });
+        }
+        checked.push({ ...image, contentType: head.contentType, size: head.contentLength });
+      }
+
+      let position = (existing?.last ?? -1) + 1;
+      await db
+        .insert(personImage)
+        .values(checked.map((image) => ({ ...image, personId: params.id, position: position++ })))
+        .onConflictDoNothing({ target: personImage.key });
+      return listImages(db, params.id);
+    },
+    {
+      auth: true,
+      params: PersonParams,
+      body: RegisterImages,
+      response: { 200: t.Array(PersonImage), 401: Message, 404: Message, 422: Message },
+    },
+  )
+  .delete(
+    "/people/:id/images/:imageId",
+    async ({ db, user, params, status }) => {
+      if (!(await findOwnPerson(db, user.id, params.id))) return status(404, { message: "Person not found" });
+      const [removed] = await db
+        .delete(personImage)
+        .where(and(eq(personImage.id, params.imageId), eq(personImage.personId, params.id)))
+        .returning({ key: personImage.key });
+      if (!removed) return status(404, { message: "Image not found" });
+
+      const { client, bucket } = getStorage();
+      await deleteObject(client, { bucket, key: removed.key });
+      return listImages(db, params.id);
+    },
+    {
+      auth: true,
+      params: ImageParams,
+      response: { 200: t.Array(PersonImage), 401: Message, 404: Message },
     },
   );

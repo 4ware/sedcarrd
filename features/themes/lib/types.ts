@@ -1,7 +1,7 @@
 import type { ComponentType, CSSProperties, ReactNode } from "react";
 
 /** The blocks of a profile page; each can be wrapped (e.g. made editable) through the Section slot. */
-export type ProfileSectionKey = "name" | "about" | "skills" | "location" | "appearance";
+export type ProfileSectionKey = "name" | "about" | "photos" | "skills" | "location" | "appearance";
 
 /** Display-ready profile: everything a theme renders, already translated and formatted. */
 export type ProfileView = {
@@ -13,7 +13,9 @@ export type ProfileView = {
   basicsTitle: string;
   /** Shown for an empty value, e.g. "—". */
   emptyValue: string;
-  placeholders: { name: string; about: string };
+  /** Photos in display order (signed URLs), with alt text. */
+  images: { id: string; url: string; alt: string }[];
+  placeholders: { name: string; about: string; photos: string };
   groups: {
     key: Extract<ProfileSectionKey, "skills" | "location" | "appearance">;
     title: string;

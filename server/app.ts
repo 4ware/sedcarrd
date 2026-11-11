@@ -1,5 +1,6 @@
 import { Elysia } from "elysia";
 import { peopleRoutes } from "@/features/people/api/routes";
+import { handleUploadRequest } from "@/features/people/api/upload";
 import { accountRoutes, handleAuthRequest } from "./routes/auth";
 import { healthRoutes } from "./routes/health";
 import { helloRoutes } from "./routes/hello";
@@ -15,6 +16,8 @@ import { helloRoutes } from "./routes/hello";
  */
 export const app = new Elysia({ prefix: "/api", aot: false, normalize: "typebox" })
   .mount("/auth", handleAuthRequest)
+  // better-upload: pre-signed S3 upload URLs (client: useUploadFiles, default api "/api/upload").
+  .mount("/upload", handleUploadRequest)
   .use(helloRoutes)
   .use(healthRoutes)
   .use(accountRoutes)

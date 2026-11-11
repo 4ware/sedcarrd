@@ -2,14 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import { createContext, type ReactNode, useContext } from "react";
-import type { PersonSectionKey } from "@/features/people";
 import type { ProfileSectionKey } from "@/features/themes";
 import { cn } from "@/lib/utils";
 
 type EditorSectionsState = {
   /** The section open in the drawer, if any. */
-  selected: PersonSectionKey | null;
-  onEdit: (section: PersonSectionKey, trigger: HTMLButtonElement) => void;
+  selected: ProfileSectionKey | null;
+  onEdit: (section: ProfileSectionKey, trigger: HTMLButtonElement) => void;
 };
 
 export const EditorSectionsContext = createContext<EditorSectionsState | null>(null);

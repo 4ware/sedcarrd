@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { type ThemeProps, themeVars } from "../../lib/types";
+import { PhotoGallery } from "../photo-gallery";
 
 const TILE_COLORS = ["bg-[#e07a5f] text-[#1d2433]", "bg-[#f2cc8f] text-[#1d2433]", "bg-[#81b29a] text-[#1d2433]"];
 
@@ -42,6 +43,18 @@ export function MonoTheme({ profile, Section }: ThemeProps) {
             )}
           </Section>
         </header>
+
+        <div className="border-b border-[#1d2433]/15 px-6 py-8 sm:px-10">
+          <Section section="photos" className="p-1">
+            <PhotoGallery
+              images={profile.images}
+              placeholder={profile.placeholders.photos}
+              imageClassName="rounded-sm border border-[#1d2433]/20"
+              emptyClassName="border-[#1d2433]/25 text-[#1d2433]/50"
+              columns={2}
+            />
+          </Section>
+        </div>
 
         <section className="flex flex-col gap-4 px-6 py-10 sm:px-10">
           <h2 className="text-xs tracking-[0.2em] text-[#1d2433]/60 uppercase">{profile.basicsTitle}</h2>

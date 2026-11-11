@@ -6,9 +6,14 @@ import { ApiError } from "@/lib/api/unwrap";
 import { renderApp } from "@/test/render-app";
 
 type Person = people.PersonInput & { id: string };
-const lena: Person & { theme: "classic" | "mono" | "midnight" | "sunset" } = {
+type ImageView = { id: string; name: string; url: string };
+const lena: Person & { theme: people.UpdatePersonInput["theme"] & string; images: ImageView[] } = {
   id: "p-1",
   theme: "classic",
+  images: [
+    { id: "img-1", name: "a.jpg", url: "https://storage.example/a.jpg" },
+    { id: "img-2", name: "b.jpg", url: "https://storage.example/b.jpg" },
+  ],
   firstName: "Lena",
   lastName: "Vogt",
   professions: ["Schauspielerin", "Sprecherin"],
@@ -45,11 +50,14 @@ const mutateAsync = mock(async (_input: people.UpdatePersonInput) => {
   return {};
 });
 const usePerson = mock((_id: string) => personState);
+const deleteImage = mock((_imageId: string) => {});
 // Keep the real field model; only the data hooks are replaced.
 mock.module("@/features/people", () => ({
   ...people,
   usePerson,
   useUpdatePerson: () => ({ mutateAsync, isError: updateFails, reset: () => {} }),
+  useRegisterPersonImages: () => ({ mutate: () => {}, error: null }),
+  useDeletePersonImage: () => ({ mutate: deleteImage, error: null, isPending: false }),
 }));
 const { Editor } = await import("./editor");
 
@@ -134,7 +142,7 @@ describe("Editor", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
     expect(mutateAsync).toHaveBeenCalledTimes(1);
-    const { id: _id, theme: _theme, ...expected } = lena;
+    const { id: _id, theme: _theme, images: _images, ...expected } = lena;
     expect(mutateAsync.mock.calls[0]?.[0]).toEqual({ ...expected, languages: ["Deutsch", "Spanisch"] });
     expect(page().getByRole("button", { name: "Edit Skills" })).toHaveFocus();
   });
@@ -214,5 +222,30 @@ describe("Editor", () => {
     personState = { isPending: false, isError: false, data: { ...lena, theme: "mono" }, error: null };
     renderApp(<Editor personId="p-1" />);
     expect(themeOf()).toBe("mono");
+  });
+
+  test("shows the photos on the page and manages them in the photos drawer", async () => {
+    renderApp(<Editor personId="p-1" />);
+    const photos = page().getAllByRole("img");
+    expect(photos.map((img) => img.getAttribute("alt"))).toEqual(["Lena Vogt, photo 1", "Lena Vogt, photo 2"]);
+
+    const { user, drawer } = await open("Edit Photos", "Photos");
+    expect(drawer.getByText("Drag photos here or click to choose")).toBeInTheDocument();
+    expect(drawer.getByText("2 of 24 photos")).toBeInTheDocument();
+    const thumbnails = within(drawer.getByRole("list", { name: "Uploaded photos" })).getAllByRole("listitem");
+    expect(thumbnails).toHaveLength(2);
+
+    await user.click(drawer.getByRole("button", { name: "Delete photo 2" }));
+    expect(deleteImage).toHaveBeenCalledWith("img-2");
+
+    await user.click(drawer.getByRole("button", { name: "Done" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(mutateAsync).not.toHaveBeenCalled();
+  });
+
+  test("without photos the page shows where to add them", () => {
+    personState = { isPending: false, isError: false, data: { ...lena, images: [] }, error: null };
+    renderApp(<Editor personId="p-1" />);
+    expect(page().getByText("Add photos")).toBeInTheDocument();
   });
 });
