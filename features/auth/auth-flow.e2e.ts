@@ -1,19 +1,8 @@
 import { expect, type Page, test } from "@playwright/test";
-import { createEmailVerificationToken } from "better-auth/api";
+import { confirmEmail, e2ePassword as password, uniqueEmail } from "@/test/e2e/session";
 
 // Needs a server whose DATABASE_URL points at a migrated database (see README → Testing) and the
 // same BETTER_AUTH_SECRET as this process (loaded from .env by playwright.config.ts).
-const password = "correct horse battery staple";
-// Resend's test inbox: accepts any "+label" address without affecting deliverability.
-const uniqueEmail = () => `delivered+e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@resend.dev`;
-
-/** Opens the link from the verification email, signed the same way the server signs it. */
-async function confirmEmail(page: Page, email: string) {
-  const secret = process.env.BETTER_AUTH_SECRET;
-  if (!secret) throw new Error("BETTER_AUTH_SECRET is not set (needed to build the verification link).");
-  const token = await createEmailVerificationToken(secret, email);
-  await page.goto(`/api/auth/verify-email?token=${token}&callbackURL=${encodeURIComponent("/dashboard")}`);
-}
 
 async function signUp(page: Page, name: string, email: string) {
   await page.getByLabel("Name").fill(name);
@@ -44,6 +33,9 @@ test("sign up, confirm the email, log out from the sidebar menu, log back in", a
 
   await expect(page).toHaveURL(/\/dashboard$/);
   await expect(page.getByRole("heading", { name: "Hallo, Mara Ellison" })).toBeVisible();
+  // A new account has no people yet.
+  await expect(page.getByRole("heading", { name: "Deine Personen" })).toBeVisible();
+  await expect(page.getByText("Noch keine Personen")).toBeVisible();
 
   // Signed-in users skip the auth pages
   await page.goto("/login");

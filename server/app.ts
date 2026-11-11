@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { peopleRoutes } from "@/features/people/api/routes";
 import { accountRoutes, handleAuthRequest } from "./routes/auth";
 import { healthRoutes } from "./routes/health";
 import { helloRoutes } from "./routes/hello";
@@ -16,6 +17,7 @@ export const app = new Elysia({ prefix: "/api", aot: false, normalize: "typebox"
   .mount("/auth", handleAuthRequest)
   .use(helloRoutes)
   .use(healthRoutes)
-  .use(accountRoutes);
+  .use(accountRoutes)
+  .use(peopleRoutes);
 
 export type App = typeof app;
