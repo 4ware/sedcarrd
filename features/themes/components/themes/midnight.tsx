@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { type ThemeProps, themeVars } from "../../lib/types";
+import { PhotoGallery } from "../photo-gallery";
 
 /** Nacht: full-bleed dark gradient, bold sans name, profession chips and frosted tiles. */
 export function MidnightTheme({ profile, Section }: ThemeProps) {
@@ -39,6 +40,15 @@ export function MidnightTheme({ profile, Section }: ThemeProps) {
             )}
           </Section>
         </header>
+
+        <Section section="photos" className="p-1">
+          <PhotoGallery
+            images={profile.images}
+            placeholder={profile.placeholders.photos}
+            imageClassName="rounded-2xl ring-1 ring-white/10"
+            emptyClassName="border-white/20 text-white/50"
+          />
+        </Section>
 
         <section className="flex flex-col gap-6">
           <h2 className="text-sm font-medium tracking-[0.2em] text-[#8ab4ff] uppercase">{profile.basicsTitle}</h2>

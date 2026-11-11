@@ -7,7 +7,7 @@ import { type ReactNode, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   type PersonFieldsValues,
-  type PersonSectionKey,
+  type PersonImageView,
   toPersonFieldsValues,
   toPersonInput,
   usePerson,
@@ -57,6 +57,7 @@ export function Editor({ personId }: { personId: string }) {
       personId={personId}
       initialValues={toPersonFieldsValues(person.data)}
       initialTheme={person.data.theme}
+      images={person.data.images}
     />
   );
 }
@@ -65,10 +66,16 @@ function EditorMessage({ children }: { children: ReactNode }) {
   return <main className="flex min-h-svh flex-col items-center justify-center gap-4 bg-muted p-6">{children}</main>;
 }
 
-type WorkspaceProps = { personId: string; initialValues: PersonFieldsValues; initialTheme: ThemeKey };
+type WorkspaceProps = {
+  personId: string;
+  initialValues: PersonFieldsValues;
+  initialTheme: ThemeKey;
+  /** Live from the person query (uploads/deletes update it right away). */
+  images: PersonImageView[];
+};
 
 /** Live page, floating toolbar, and a left drawer with a section's fields or the theme picker. */
-function EditorWorkspace({ personId, initialValues, initialTheme }: WorkspaceProps) {
+function EditorWorkspace({ personId, initialValues, initialTheme, images }: WorkspaceProps) {
   const [panel, setPanel] = useState<EditorPanel | null>(null);
   // The saved theme, and the one shown while picking (previewed live, saved with "Done").
   const [savedTheme, setSavedTheme] = useState(initialTheme);
@@ -108,7 +115,13 @@ function EditorWorkspace({ personId, initialValues, initialTheme }: WorkspacePro
 
   return (
     <>
-      <EditorCanvas values={values} theme={theme} selected={panel === "theme" ? null : panel} onEdit={open} />
+      <EditorCanvas
+        values={values}
+        images={images}
+        theme={theme}
+        selected={panel === "theme" ? null : panel}
+        onEdit={open}
+      />
       <EditorToolbar onEdit={(trigger) => open("name", trigger)} onTheme={(trigger) => open("theme", trigger)} />
       <EditorDrawer
         form={form}
@@ -120,6 +133,8 @@ function EditorWorkspace({ personId, initialValues, initialTheme }: WorkspacePro
         onThemeChange={setTheme}
         onSaveTheme={saveTheme}
         savingTheme={updatePerson.isPending}
+        personId={personId}
+        images={images}
       />
     </>
   );

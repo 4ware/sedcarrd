@@ -6,6 +6,7 @@ import {
   LIST_FIELDS,
   type PersonFieldName,
   type PersonFieldsValues,
+  type PersonImageView,
   personSections,
   splitList,
 } from "@/features/people";
@@ -23,7 +24,7 @@ function display(field: PersonFieldName, value: string) {
 }
 
 /** The live form values as a theme-ready, translated profile. */
-export function useProfileView(values: PersonFieldsValues): ProfileView {
+export function useProfileView(values: PersonFieldsValues, images: PersonImageView[] = []): ProfileView {
   const t = useTranslations("Editor.canvas");
   const tPeople = useTranslations("People");
 
@@ -40,13 +41,20 @@ export function useProfileView(values: PersonFieldsValues): ProfileView {
         })
       : "";
 
+  const name = [values.firstName.trim(), values.lastName.trim()].filter(Boolean).join(" ");
+
   return {
-    name: [values.firstName.trim(), values.lastName.trim()].filter(Boolean).join(" "),
+    name,
     professions: splitList(values.professions),
     born,
     basicsTitle: t("basics"),
     emptyValue: "—",
-    placeholders: { name: t("namePlaceholder"), about: t("aboutPlaceholder") },
+    images: images.map((image, index) => ({
+      id: image.id,
+      url: image.url,
+      alt: t("photoAlt", { name: name || t("namePlaceholder"), index: index + 1 }),
+    })),
+    placeholders: { name: t("namePlaceholder"), about: t("aboutPlaceholder"), photos: t("photosPlaceholder") },
     groups: personSections
       .filter((s) => s.key === "skills" || s.key === "location" || s.key === "appearance")
       .map(({ key, fields }) => ({

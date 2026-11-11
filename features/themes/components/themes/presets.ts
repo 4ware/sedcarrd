@@ -39,6 +39,8 @@ export type ThemePreset = {
   banner?: string;
   /** columns: short accent bar above each group title. */
   bar?: string;
+  /** Photo corners/frame; default "rounded-lg". */
+  photo?: string;
   /** Miniature in the theme picker: page and card backgrounds, text colour, font. */
   swatch: { page: string; card: string; text: string; font: string };
 };
@@ -58,6 +60,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     tile: "border-t border-[#2f3e46]/15 pt-4",
     groupTitle: "font-serif text-lg font-semibold",
     rows: "inline",
+    photo: "rounded-sm shadow-md",
     swatch: { page: "bg-[#efe9dd]", card: "bg-[#fbf8f1]", text: "text-[#2f3e46]", font: "font-serif" },
   },
   ink: {
@@ -90,6 +93,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     groupTitle: "text-sm font-semibold text-[#c7d2fe]",
     rows: "inline",
     chip: "rounded-md bg-[#6366f1] px-2.5 py-1 text-sm text-white",
+    photo: "rounded-2xl ring-1 ring-white/20",
     swatch: { page: "bg-[#1e1b4b]", card: "bg-[#3b3478]", text: "text-white", font: "font-sans" },
   },
   dotted: {
@@ -105,6 +109,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     tile: "rounded-xl border border-dashed border-[#e4e4e7] p-4",
     groupTitle: "text-sm font-bold",
     rows: "inline",
+    photo: "rounded-xl border-2 border-dashed border-[#d4d4d8] p-1",
     swatch: { page: "bg-[#f7f7f8]", card: "bg-white", text: "text-[#18181b]", font: "font-sans" },
   },
 
@@ -122,6 +127,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     tile: "rounded-xl border border-[#cfe1b9]/20 bg-[#cfe1b9]/[0.06] p-5",
     groupTitle: "font-serif text-xl font-semibold",
     rows: "stacked",
+    photo: "rounded-xl",
     swatch: { page: "bg-[#1b3022]", card: "bg-[#2d4a35]", text: "text-[#f1efe6]", font: "font-serif" },
   },
   dune: {
@@ -168,6 +174,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     tile: "border-l-2 border-[#e11d48] pl-5",
     groupTitle: "text-sm font-semibold uppercase tracking-[0.2em]",
     rows: "stacked",
+    photo: "rounded-none grayscale",
     swatch: { page: "bg-[#0a0a0a]", card: "bg-[#262626]", text: "text-white", font: "font-serif" },
   },
 
@@ -186,6 +193,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     groupTitle: "text-base font-bold",
     rows: "inline",
     panel: "rounded-[1.25rem] bg-[#f3f4f6]",
+    photo: "rounded-2xl",
     swatch: { page: "bg-[#e5e7eb]", card: "bg-white", text: "text-[#111827]", font: "font-sans" },
   },
   citrus: {
@@ -255,6 +263,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     groupTitle: "font-mono text-sm uppercase tracking-wider",
     rows: "inline",
     bar: "bg-[#2563eb]",
+    photo: "rounded-none",
     swatch: { page: "bg-white", card: "bg-[#f5f5f5]", text: "text-[#0a0a0a]", font: "font-sans" },
   },
   neon: {
@@ -288,6 +297,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     groupTitle: "font-serif text-xl",
     rows: "inline",
     bar: "bg-[#3f6212]",
+    photo: "rounded-[1.5rem]",
     swatch: { page: "bg-[#c7d3bf]", card: "bg-[#f4f1e8]", text: "text-[#2b3a27]", font: "font-serif" },
   },
   blueprint: {
@@ -304,6 +314,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     groupTitle: "font-mono text-sm uppercase tracking-widest",
     rows: "inline",
     bar: "bg-white",
+    photo: "rounded-none border border-white/50",
     swatch: { page: "bg-[#1e40af]", card: "bg-[#2747b8]", text: "text-white", font: "font-mono" },
   },
 
@@ -322,6 +333,7 @@ export const PRESETS: Record<PresetThemeKey, ThemePreset> = {
     groupTitle: "text-base font-bold",
     rows: "inline",
     banner: "rounded-[1.6rem] bg-[linear-gradient(135deg,#f472b6_0%,#c084fc_100%)] text-white",
+    photo: "rounded-3xl",
     swatch: { page: "bg-[#fdf2f8]", card: "bg-[#f472b6]", text: "text-white", font: "font-sans" },
   },
   aurora: {

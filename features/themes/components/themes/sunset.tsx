@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { type ThemeProps, themeVars } from "../../lib/types";
+import { PhotoGallery } from "../photo-gallery";
 
 /** Abendrot: white frame around a warm gradient panel; name on the left, Basisdaten cards on the right. */
 export function SunsetTheme({ profile, Section }: ThemeProps) {
@@ -34,6 +35,15 @@ export function SunsetTheme({ profile, Section }: ThemeProps) {
               )}
             </Section>
             <span aria-hidden="true" className="ml-2 h-1 w-14 rounded-full bg-white/60" />
+            <Section section="photos" className="p-1">
+              <PhotoGallery
+                images={profile.images}
+                placeholder={profile.placeholders.photos}
+                imageClassName="rounded-2xl border-4 border-white shadow-lg"
+                emptyClassName="border-white/50 text-white/80"
+                columns={2}
+              />
+            </Section>
           </header>
 
           <section className="flex flex-col gap-4">

@@ -42,7 +42,8 @@
     "about": "About",
     "skills": "Skills",
     "location": "Location & nationality",
-    "appearance": "Appearance"
+    "appearance": "Appearance",
+    "photos": "Photos"
   },
   "fields": {
     "firstName": "First name",

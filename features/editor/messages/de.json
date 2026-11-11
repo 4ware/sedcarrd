@@ -6,7 +6,9 @@
     "namePlaceholder": "Dein Name",
     "aboutPlaceholder": "Berufe, Geburtsjahr und -ort",
     "basics": "Basisdaten",
-    "born": "{hasYear, select, yes {Geboren {year}} other {Geboren}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} Jahre)} other {}}"
+    "born": "{hasYear, select, yes {Geboren {year}} other {Geboren}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} Jahre)} other {}}",
+    "photosPlaceholder": "Fotos hinzufügen",
+    "photoAlt": "{name}, Foto {index}"
   },
   "toolbar": {
     "label": "Editor",
@@ -25,12 +27,25 @@
       "skills": "Sprachen, Gesang, Tanz, Sport und Lizenzen.",
       "location": "Wo die Person arbeitet und wohnt.",
       "appearance": "Größe, Statur und Aussehen fürs Casting.",
-      "theme": "Wähle einen Look für die Seite. Er wird sofort angezeigt und mit „Fertig“ gespeichert."
+      "theme": "Wähle einen Look für die Seite. Er wird sofort angezeigt und mit „Fertig“ gespeichert.",
+      "photos": "Fotos werden gespeichert, sobald sie hochgeladen sind."
     },
     "eyebrowDesign": "Gestaltung",
-    "themeTitle": "Design"
+    "themeTitle": "Design",
+    "eyebrowMedia": "Medien"
   },
   "loading": "Editor wird geladen …",
   "notFound": "Diese Person gibt es nicht (mehr).",
-  "loadFailed": "Die Person konnte nicht geladen werden. Bitte lade die Seite neu."
+  "loadFailed": "Die Person konnte nicht geladen werden. Bitte lade die Seite neu.",
+  "photos": {
+    "dropzone": "Fotos hierher ziehen oder klicken zum Auswählen",
+    "drop": "Fotos hier ablegen",
+    "limits": "Bis zu {perUpload} auf einmal, je bis zu {size} MB. JPEG, PNG, WebP, AVIF oder GIF.",
+    "full": "Diese Person hat bereits {max} Fotos. Lösche eins, um ein weiteres hinzuzufügen.",
+    "error": "Die Fotos konnten nicht gespeichert werden. Bitte versuche es erneut.",
+    "listLabel": "Hochgeladene Fotos",
+    "thumbnailAlt": "Foto {index}",
+    "delete": "Foto {index} löschen",
+    "count": "{count} von {max} Fotos"
+  }
 }

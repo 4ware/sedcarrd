@@ -77,3 +77,29 @@ export const person = pgTable(
 
 export type Person = typeof person.$inferSelect;
 export type NewPerson = typeof person.$inferInsert;
+
+/**
+ * Images of a person, stored in S3 (key `people/<personId>/<uuid>.<ext>`). One person has many
+ * images; they are deleted with the person (the S3 objects are removed by the API on delete).
+ */
+export const personImage = pgTable(
+  "person_image",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    personId: uuid("person_id")
+      .notNull()
+      .references(() => person.id, { onDelete: "cascade" }),
+    /** S3 object key. */
+    key: text("key").notNull().unique(),
+    /** Original file name, used as fallback alt text. */
+    name: text("name").notNull(),
+    contentType: text("content_type").notNull(),
+    size: integer("size").notNull(),
+    /** Display order (ascending). */
+    position: integer("position").notNull().default(0),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("person_image_person_id_idx").on(table.personId)],
+);
+
+export type PersonImage = typeof personImage.$inferSelect;

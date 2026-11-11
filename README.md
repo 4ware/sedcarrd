@@ -10,6 +10,7 @@ bun install
 cp .env.example .env   # local credentials + connection strings
 bun run db:up          # Postgres (dev + test) and S3 storage via docker compose
 bun run db:migrate     # apply migrations to the dev database
+bun run storage:setup  # create the S3 buckets (dev + test) with CORS for local origins
 bun run dev
 ```
 
@@ -58,9 +59,18 @@ against the throw-away test database:
 ```sh
 bun run db:migrate:test
 bun run build
-DATABASE_URL=$TEST_DATABASE_URL BETTER_AUTH_URL=http://localhost:5199 bunx vite preview --port 5199 &
+DATABASE_URL=$TEST_DATABASE_URL S3_BUCKET=$S3_TEST_BUCKET BETTER_AUTH_URL=http://localhost:5199 bunx vite preview --port 5199 &
 PLAYWRIGHT_BASE_URL=http://localhost:5199 bun run test:e2e
 ```
+
+## Person images (S3)
+
+Images are uploaded with [better-upload](https://better-upload.com): `POST /api/upload` (route `personImages`) checks
+the session and ownership and returns pre-signed URLs; the browser uploads straight to the bucket and then registers
+the keys with `POST /api/people/:id/images`, which verifies each object. The bucket stays private; the API returns
+signed GET URLs (1 hour). Config: `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` (Worker secrets),
+`S3_REGION`, `S3_BUCKET` (`cloudflare.config.ts`). The production bucket needs a CORS rule allowing `PUT` from the
+app's origin. `bun test` uses `S3_TEST_BUCKET`.
 
 ## Production database
 
