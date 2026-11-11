@@ -157,6 +157,17 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
     const tooTall = await api.people({ id: own.id }).patch({ heightCm: 400 }, { headers: { cookie } });
     expect(tooTall.error?.status).toBe(422);
 
+    // Theme: classic by default, only registered keys are accepted.
+    expect(one?.theme).toBe("classic");
+    const { data: themed } = await api.people({ id: own.id }).patch({ theme: "midnight" }, { headers: { cookie } });
+    expect(themed).toMatchObject({ theme: "midnight", firstName: "Anne" });
+    const unknownTheme = await api.people({ id: own.id }).patch(
+      // @ts-expect-error: not a registered theme
+      { theme: "disco" },
+      { headers: { cookie } },
+    );
+    expect(unknownTheme.error?.status).toBe(422);
+
     const [foreign] = await db.select({ id: person.id }).from(person).where(eq(person.userId, ids[1] as string));
     const foreignId = foreign?.id as string;
     expect((await api.people({ id: foreignId }).get({ headers: { cookie } })).error?.status).toBe(404);

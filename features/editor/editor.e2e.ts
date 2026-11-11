@@ -17,7 +17,7 @@ test("a person opens from the dashboard in the editor, loaded and editable", asy
   await expect(page).toHaveTitle("Editor — Sedcarrd");
   await expect(page.getByRole("link", { name: "Übersicht" })).toHaveCount(0);
 
-  const sitePage = page.getByRole("article", { name: "Deine Seite" });
+  const sitePage = page.getByRole("main", { name: "Deine Seite" });
   const nameElement = sitePage.getByRole("button", { name: "Name bearbeiten" });
   const nameHeading = sitePage.getByRole("heading", { level: 1 });
   await expect(nameHeading).toContainText("Lena Vogt");
@@ -54,13 +54,38 @@ test("a person opens from the dashboard in the editor, loaded and editable", asy
   await skills.getByRole("button", { name: "Fertig" }).click();
   await expect(skills).toBeHidden();
 
+  // Theme: previewed while picking, saved with "Fertig".
+  const toolbar = page.getByRole("navigation", { name: "Editor" });
+  await toolbar.getByRole("button", { name: "Design ändern" }).click();
+  const design = page.getByRole("dialog", { name: "Design" });
+  for (const [label, key] of [
+    ["Mono", "mono"],
+    ["Nacht", "midnight"],
+    ["Abendrot", "sunset"],
+    ["Klassisch", "classic"],
+  ] as const) {
+    // The radios are visually hidden; users click the theme card (their label).
+    await design.locator("label", { hasText: label }).click();
+    await expect(design.getByRole("radio", { name: label, exact: true })).toBeChecked();
+    await expect(page.locator(`[data-theme-key="${key}"]`)).toBeVisible();
+    // Screenshot of the page alone (drawer hidden for the shot only).
+    const drawerElement = await design.elementHandle();
+    await drawerElement?.evaluate((el) => (el as HTMLElement).style.setProperty("visibility", "hidden"));
+    await page.screenshot({ path: `test-results/theme-${key}.png`, animations: "disabled", fullPage: true });
+    await drawerElement?.evaluate((el) => (el as HTMLElement).style.removeProperty("visibility"));
+  }
+  await design.locator("label", { hasText: "Abendrot" }).click();
+  await design.getByRole("button", { name: "Fertig" }).click();
+  await expect(design).toBeHidden();
+
   // Saved: still there after a reload, and in the dashboard list.
   await page.reload();
   await expect(nameHeading).toContainText("Mara Ellison");
   await expect(sitePage.getByText("170 cm")).toBeVisible();
   await expect(sitePage.getByText("Deutsch, Englisch")).toBeVisible();
+  await expect(page.locator('[data-theme-key="sunset"]')).toBeVisible();
   await page.screenshot({ path: "test-results/editor.png", animations: "disabled", fullPage: true });
-  await page.getByRole("navigation", { name: "Editor" }).getByRole("link", { name: "Zurück zum Dashboard" }).click();
+  await toolbar.getByRole("link", { name: "Zurück zum Dashboard" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
   await expect(page.getByRole("link", { name: "Mara Ellison" })).toBeVisible();
 });

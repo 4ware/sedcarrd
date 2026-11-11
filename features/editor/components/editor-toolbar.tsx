@@ -1,20 +1,25 @@
 "use client";
 
-import { LayoutDashboardIcon, PencilIcon } from "lucide-react";
+import { LayoutDashboardIcon, PaletteIcon, PencilIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link } from "@/i18n/navigation";
 
 /** Floating menu at the top right, replacing the dashboard sidebar on the editor page. */
-export function EditorToolbar({ onEdit }: { onEdit: (trigger: HTMLButtonElement) => void }) {
+type EditorToolbarProps = {
+  onEdit: (trigger: HTMLButtonElement) => void;
+  onTheme: (trigger: HTMLButtonElement) => void;
+};
+
+export function EditorToolbar({ onEdit, onTheme }: EditorToolbarProps) {
   const t = useTranslations("Editor.toolbar");
 
   return (
     <TooltipProvider delayDuration={300}>
       <nav
         aria-label={t("label")}
-        className="fixed top-4 right-4 z-40 flex items-center gap-1 rounded-xl bg-foreground p-1.5 text-background shadow-lg"
+        className="fixed top-4 right-4 z-40 flex items-center gap-1 rounded-xl bg-foreground p-1.5 text-background shadow-lg ring-1 ring-white/15"
       >
         <Tooltip>
           <TooltipTrigger asChild>
@@ -30,6 +35,21 @@ export function EditorToolbar({ onEdit }: { onEdit: (trigger: HTMLButtonElement)
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">{t("edit")}</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-lg"
+              onClick={(event) => onTheme(event.currentTarget)}
+              aria-label={t("theme")}
+              className="hover:bg-background/15 hover:text-background"
+            >
+              <PaletteIcon />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">{t("theme")}</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>

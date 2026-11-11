@@ -1,5 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { Elysia, t } from "elysia";
+import { THEME_KEYS } from "@/features/themes/registry";
 import { authPlugin } from "@/server/plugins/auth";
 import { dbPlugin } from "@/server/plugins/db";
 import { person } from "../db/schema";
@@ -35,6 +36,9 @@ const personFields = {
   eyeColor: optionalText,
 };
 
+/** Page theme; only the registered keys are accepted. */
+const Theme = t.UnionEnum(THEME_KEYS);
+
 /** One entry of the dashboard list. */
 export const PersonSummary = t.Object({
   id: t.String(),
@@ -45,8 +49,8 @@ export const PersonSummary = t.Object({
   workingLocation: t.Nullable(t.String()),
 });
 
-/** A person with every field (editor). */
-export const PersonDetail = t.Object({ id: t.String(), ...personFields });
+/** A person with every field and their theme (editor). */
+export const PersonDetail = t.Object({ id: t.String(), ...personFields, theme: Theme });
 
 /** Body of POST /people: the create form's fields. */
 export const CreatePerson = t.Object({
@@ -58,8 +62,8 @@ export const CreatePerson = t.Object({
   workingLocation: personFields.workingLocation,
 });
 
-/** Body of PATCH /people/:id: any subset of the fields. */
-export const UpdatePerson = t.Partial(t.Object(personFields), { minProperties: 1 });
+/** Body of PATCH /people/:id: any subset of the fields and/or the theme. */
+export const UpdatePerson = t.Partial(t.Object({ ...personFields, theme: Theme }), { minProperties: 1 });
 
 const PersonParams = t.Object({ id: t.String({ format: "uuid" }) });
 const Message = t.Object({ message: t.String() });
@@ -97,6 +101,7 @@ const detailColumns = {
   hairColor: person.hairColor,
   hairLength: person.hairLength,
   eyeColor: person.eyeColor,
+  theme: person.theme,
 };
 
 /**

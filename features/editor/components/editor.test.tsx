@@ -6,8 +6,9 @@ import { ApiError } from "@/lib/api/unwrap";
 import { renderApp } from "@/test/render-app";
 
 type Person = people.PersonInput & { id: string };
-const lena: Person = {
+const lena: Person & { theme: "classic" | "mono" | "midnight" | "sunset" } = {
   id: "p-1",
+  theme: "classic",
   firstName: "Lena",
   lastName: "Vogt",
   professions: ["Schauspielerin", "Sprecherin"],
@@ -35,7 +36,7 @@ const lena: Person = {
 type PersonState =
   | { isPending: true; isError: false; data: undefined; error: null }
   | { isPending: false; isError: true; data: undefined; error: Error }
-  | { isPending: false; isError: false; data: Person; error: null };
+  | { isPending: false; isError: false; data: typeof lena; error: null };
 
 let personState: PersonState = { isPending: false, isError: false, data: lena, error: null };
 let updateFails = false;
@@ -52,7 +53,8 @@ mock.module("@/features/people", () => ({
 }));
 const { Editor } = await import("./editor");
 
-const page = (name = "Your page") => within(screen.getByRole("article", { name }));
+const page = (name = "Your page") => within(screen.getByRole("main", { name }));
+const themeOf = () => document.querySelector("[data-theme-key]")?.getAttribute("data-theme-key");
 
 async function open(editLabel: string, dialogName: string) {
   const user = userEvent.setup();
@@ -132,7 +134,7 @@ describe("Editor", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
     expect(mutateAsync).toHaveBeenCalledTimes(1);
-    const { id: _id, ...expected } = lena;
+    const { id: _id, theme: _theme, ...expected } = lena;
     expect(mutateAsync.mock.calls[0]?.[0]).toEqual({ ...expected, languages: ["Deutsch", "Spanisch"] });
     expect(page().getByRole("button", { name: "Edit Skills" })).toHaveFocus();
   });
@@ -178,5 +180,39 @@ describe("Editor", () => {
     await user.type(firstName, "Mara");
     expect(firstName).not.toHaveAttribute("aria-invalid");
     expect(page().getByRole("heading", { level: 1 })).toHaveTextContent("Mara Vogt");
+  });
+
+  test("the theme picker previews live, saves with Done and reverts on Escape", async () => {
+    renderApp(<Editor personId="p-1" />);
+    const user = userEvent.setup();
+    const toolbar = within(screen.getByRole("navigation", { name: "Editor" }));
+    expect(themeOf()).toBe("classic");
+
+    // Escape discards the preview.
+    await user.click(toolbar.getByRole("button", { name: "Change theme" }));
+    let drawer = within(await screen.findByRole("dialog", { name: "Theme" }));
+    await waitFor(() => expect(drawer.getByRole("radio", { name: "Classic" })).toHaveFocus());
+    await user.click(drawer.getByRole("radio", { name: "Midnight" }));
+    expect(themeOf()).toBe("midnight");
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(themeOf()).toBe("classic");
+    expect(mutateAsync).not.toHaveBeenCalled();
+
+    // Done saves the chosen theme.
+    await user.click(toolbar.getByRole("button", { name: "Change theme" }));
+    drawer = within(await screen.findByRole("dialog", { name: "Theme" }));
+    await user.click(drawer.getByRole("radio", { name: "Sunset" }));
+    await user.click(drawer.getByRole("button", { name: "Done" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(mutateAsync).toHaveBeenCalledWith({ theme: "sunset" });
+    expect(themeOf()).toBe("sunset");
+    expect(toolbar.getByRole("button", { name: "Change theme" })).toHaveFocus();
+  });
+
+  test("opens in the person's saved theme", () => {
+    personState = { isPending: false, isError: false, data: { ...lena, theme: "mono" }, error: null };
+    renderApp(<Editor personId="p-1" />);
+    expect(themeOf()).toBe("mono");
   });
 });

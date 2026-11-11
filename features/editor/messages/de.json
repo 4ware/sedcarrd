@@ -11,7 +11,8 @@
   "toolbar": {
     "label": "Editor",
     "edit": "Name bearbeiten",
-    "dashboard": "Zurück zum Dashboard"
+    "dashboard": "Zurück zum Dashboard",
+    "theme": "Design ändern"
   },
   "drawer": {
     "eyebrowHeader": "Profil",
@@ -23,8 +24,11 @@
       "about": "Erscheint unter dem Namen.",
       "skills": "Sprachen, Gesang, Tanz, Sport und Lizenzen.",
       "location": "Wo die Person arbeitet und wohnt.",
-      "appearance": "Größe, Statur und Aussehen fürs Casting."
-    }
+      "appearance": "Größe, Statur und Aussehen fürs Casting.",
+      "theme": "Wähle einen Look für die Seite. Er wird sofort angezeigt und mit „Fertig“ gespeichert."
+    },
+    "eyebrowDesign": "Gestaltung",
+    "themeTitle": "Design"
   },
   "loading": "Editor wird geladen …",
   "notFound": "Diese Person gibt es nicht (mehr).",
