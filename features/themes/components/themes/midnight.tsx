@@ -43,6 +43,7 @@ export function MidnightTheme({ profile, Section }: ThemeProps) {
 
         <Section section="photos" className="p-1">
           <PhotoGallery
+            title={profile.photosTitle}
             images={profile.images}
             placeholder={profile.placeholders.photos}
             imageClassName="rounded-2xl ring-1 ring-white/10"

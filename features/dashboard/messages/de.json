@@ -1,11 +1,17 @@
 {
   "metaTitle": "Dashboard — Sedcarrd",
   "home": "Dashboard-Startseite",
-  "nav": { "overview": "Übersicht" },
-  "user": { "menuLabel": "Kontomenü", "logout": "Abmelden" },
+  "nav": {
+    "overview": "Übersicht"
+  },
+  "user": {
+    "menuLabel": "Kontomenü",
+    "logout": "Abmelden"
+  },
   "overview": {
     "title": "Übersicht",
     "greeting": "Hallo, {name}",
     "description": "Hier entsteht bald deine Seite."
-  }
+  },
+  "navLabel": "Dashboard-Navigation"
 }

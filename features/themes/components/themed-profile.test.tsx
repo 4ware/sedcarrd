@@ -10,6 +10,7 @@ const profile: ProfileView = {
   professions: ["Schauspielerin", "Sprecherin"],
   born: "Geboren 1994 in Berlin (32 Jahre)",
   basicsTitle: "Basisdaten",
+  photosTitle: "Fotos",
   emptyValue: "—",
   images: [
     { id: "i1", url: "https://example.com/1.jpg", alt: "Lena Vogt, Foto 1" },
@@ -43,6 +44,16 @@ describe.each(THEME_KEYS)("%s theme", (theme) => {
     const photos = within(screen.getByTestId("section-photos")).getAllByRole("img");
     expect(photos.map((img) => img.getAttribute("alt"))).toEqual(["Lena Vogt, Foto 1", "Lena Vogt, Foto 2"]);
     expect(photos[0]).toHaveAttribute("src", "https://example.com/1.jpg");
+  });
+
+  test("has a proper heading outline: name, then photos and Basisdaten, then the groups", () => {
+    render(<ThemedProfile theme={theme} profile={profile} Section={MarkedSection} />);
+    expect(screen.getAllByRole("heading", { level: 1 }).map((h) => h.textContent)).toEqual(["Lena Vogt"]);
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual(["Fotos", "Basisdaten"]);
+    // Accessible names: decoration such as Mono's "01 /" is not read out.
+    const groups = screen.getAllByRole("heading", { level: 3 });
+    expect(groups).toHaveLength(3);
+    ["Fähigkeiten", "Ort & Nationalität", "Aussehen"].forEach((name, i) => expect(groups[i]).toHaveAccessibleName(name));
   });
 
   test("a single photo is shown large, none shows the placeholder", () => {

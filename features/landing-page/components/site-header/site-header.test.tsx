@@ -14,7 +14,7 @@ describe("SiteHeader", () => {
 
   test("renders every nav item", () => {
     renderWithIntl(<SiteHeader />);
-    const nav = screen.getByRole("navigation", { name: "Main" });
+    const nav = screen.getByRole("navigation", { name: "Main navigation" });
     navItems.forEach((item, index) => {
       expect(within(nav).getByRole("link", { name: labels[index] })).toHaveAttribute("href", item.href);
     });

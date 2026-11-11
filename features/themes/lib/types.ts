@@ -11,6 +11,8 @@ export type ProfileView = {
   /** e.g. "Geboren 1994 in Berlin (32 Jahre)"; "" when unknown. */
   born: string;
   basicsTitle: string;
+  /** Heading of the photo gallery (visually hidden; gives the page a proper outline). */
+  photosTitle: string;
   /** Shown for an empty value, e.g. "—". */
   emptyValue: string;
   /** Photos in display order (signed URLs), with alt text. */

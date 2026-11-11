@@ -58,6 +58,7 @@
     "basics": "Basic data",
     "born": "{hasYear, select, yes {Born {year}} other {Born}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} years)} other {}}",
     "photosPlaceholder": "Add photos",
-    "photoAlt": "{name}, photo {index}"
+    "photoAlt": "{name}, photo {index}",
+    "photos": "Photos"
   }
 }

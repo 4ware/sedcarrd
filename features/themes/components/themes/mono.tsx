@@ -12,9 +12,10 @@ export function MonoTheme({ profile, Section }: ThemeProps) {
       style={themeVars("#e07a5f", "#1d2433")}
     >
       <article className="mx-auto max-w-2xl overflow-hidden rounded-lg border border-[#f6efe2]/30 bg-[#f6efe2] shadow-2xl shadow-black/40">
-        <div className="flex items-center justify-between bg-[#2b3550] px-5 py-3 text-sm text-[#f6efe2]">
+        {/* Window title bar: decoration only, it repeats the name of the heading below. */}
+        <div aria-hidden="true" className="flex items-center justify-between bg-[#2b3550] px-5 py-3 text-sm text-[#f6efe2]">
           <span className="truncate">{profile.name || profile.placeholders.name}</span>
-          <span aria-hidden="true" className="flex gap-1.5">
+          <span className="flex gap-1.5">
             <span className="size-2.5 rounded-full bg-[#e07a5f]" />
             <span className="size-2.5 rounded-full bg-[#f2cc8f]" />
             <span className="size-2.5 rounded-full bg-[#81b29a]" />
@@ -47,6 +48,7 @@ export function MonoTheme({ profile, Section }: ThemeProps) {
         <div className="border-b border-[#1d2433]/15 px-6 py-8 sm:px-10">
           <Section section="photos" className="p-1">
             <PhotoGallery
+              title={profile.photosTitle}
               images={profile.images}
               placeholder={profile.placeholders.photos}
               imageClassName="rounded-sm border border-[#1d2433]/20"
@@ -62,7 +64,8 @@ export function MonoTheme({ profile, Section }: ThemeProps) {
             <Section key={group.key} section={group.key}>
               <div className={cn("rounded-md px-4 py-3", TILE_COLORS[index % TILE_COLORS.length])}>
                 <h3 className="text-sm font-medium">
-                  {String(index + 1).padStart(2, "0")} / {group.title}
+                  <span aria-hidden="true">{String(index + 1).padStart(2, "0")} / </span>
+                  {group.title}
                 </h3>
               </div>
               <dl className="grid gap-1.5 px-4 pt-3 pb-1 text-[0.8rem]">

@@ -13,7 +13,7 @@ export function SiteHeader({ isSignedIn = false }: { isSignedIn?: boolean }) {
     <header className="border-b bg-secondary">
       <Container className="flex h-20 items-center justify-between gap-6 sm:h-24">
         <BrandLogo label={t("home")} />
-        <MainNav items={items} />
+        <MainNav items={items} label={t("navLabel")} />
         <HeaderActions isSignedIn={isSignedIn} />
       </Container>
     </header>

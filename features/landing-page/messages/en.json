@@ -9,11 +9,16 @@
     },
     "cta": "Make room for your work",
     "login": "Log in",
-    "dashboard": "Go to dashboard"
+    "dashboard": "Go to dashboard",
+    "navLabel": "Main navigation"
   },
   "hero": {
     "eyebrow": "A home for your work, wherever it takes you",
-    "headline": { "line1": "Your work", "line2": "deserves a", "accent": "good frame." },
+    "headline": {
+      "line1": "Your work",
+      "line2": "deserves a",
+      "accent": "good frame."
+    },
     "lede": "One considered page for the headshot, reel, credits and people behind your next introduction.",
     "primaryCta": "See what a page can hold",
     "secondaryCta": "Take a look around",
@@ -23,12 +28,19 @@
     "role": "Actor",
     "availability": "Available",
     "quote": "Drawn to stories that make the familiar feel a little strange.",
-    "links": { "reel": "Reel", "credits": "Credits", "contact": "Contact" },
+    "links": {
+      "reel": "Reel",
+      "credits": "Credits",
+      "contact": "Contact"
+    },
     "open": "Open {name}'s page"
   },
   "showcase": {
     "tape": "A page that feels like you.",
-    "stamp": { "top": "Your next scene", "bottom": "starts here" },
+    "stamp": {
+      "top": "Your next scene",
+      "bottom": "starts here"
+    },
     "linkNote": "A link worth keeping"
   }
 }

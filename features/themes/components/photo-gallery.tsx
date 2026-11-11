@@ -4,6 +4,8 @@ import type { ProfileView } from "../lib/types";
 
 type PhotoGalleryProps = {
   images: ProfileView["images"];
+  /** Visually hidden heading of the gallery. */
+  title: string;
   placeholder: string;
   /** Corner style etc. of each photo. */
   imageClassName?: string;
@@ -22,12 +24,15 @@ const COLUMNS = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-4" 
  */
 export function PhotoGallery({
   images,
+  title,
   placeholder,
   imageClassName = "rounded-lg",
   emptyClassName = "border-current/20 text-current/50",
   columns = 3,
   className,
 }: PhotoGalleryProps) {
+  const heading = <h2 className="sr-only">{title}</h2>;
+
   if (images.length === 0) {
     return (
       <div
@@ -47,18 +52,22 @@ export function PhotoGallery({
     const [image] = images;
     return (
       <div className={className}>
+        {heading}
         <img src={image?.url} alt={image?.alt} className={cn("max-h-[34rem] w-full object-cover", imageClassName)} />
       </div>
     );
   }
 
   return (
-    <ul className={cn("grid grid-cols-2 gap-3", COLUMNS[columns], className)}>
+    <div className={className}>
+      {heading}
+      <ul className={cn("grid grid-cols-2 gap-3", COLUMNS[columns])}>
       {images.map((image) => (
         <li key={image.id}>
           <img src={image.url} alt={image.alt} loading="lazy" className={cn("aspect-[4/5] w-full object-cover", imageClassName)} />
         </li>
       ))}
-    </ul>
+      </ul>
+    </div>
   );
 }

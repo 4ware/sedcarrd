@@ -37,6 +37,7 @@ export function ClassicTheme({ profile, Section }: ThemeProps) {
 
         <Section section="photos" className="p-2">
           <PhotoGallery
+            title={profile.photosTitle}
             images={profile.images}
             placeholder={profile.placeholders.photos}
             imageClassName="rounded-md"

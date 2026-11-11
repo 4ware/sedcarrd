@@ -58,6 +58,7 @@
     "basics": "Basisdaten",
     "born": "{hasYear, select, yes {Geboren {year}} other {Geboren}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} Jahre)} other {}}",
     "photosPlaceholder": "Fotos hinzufügen",
-    "photoAlt": "{name}, Foto {index}"
+    "photoAlt": "{name}, Foto {index}",
+    "photos": "Fotos"
   }
 }
