@@ -1,0 +1,32 @@
+{
+  "metaTitle": "Editor — Sedcarrd",
+  "canvas": {
+    "label": "Deine Seite",
+    "edit": "{section} bearbeiten",
+    "namePlaceholder": "Dein Name",
+    "aboutPlaceholder": "Berufe, Geburtsjahr und -ort",
+    "basics": "Basisdaten",
+    "born": "{hasYear, select, yes {Geboren {year}} other {Geboren}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} Jahre)} other {}}"
+  },
+  "toolbar": {
+    "label": "Editor",
+    "edit": "Name bearbeiten",
+    "dashboard": "Zurück zum Dashboard"
+  },
+  "drawer": {
+    "eyebrowHeader": "Profil",
+    "eyebrowBasics": "Basisdaten",
+    "done": "Fertig",
+    "saveFailed": "Speichern fehlgeschlagen. Bitte versuche es erneut.",
+    "descriptions": {
+      "name": "Erscheint als Hauptüberschrift der Seite.",
+      "about": "Erscheint unter dem Namen.",
+      "skills": "Sprachen, Gesang, Tanz, Sport und Lizenzen.",
+      "location": "Wo die Person arbeitet und wohnt.",
+      "appearance": "Größe, Statur und Aussehen fürs Casting."
+    }
+  },
+  "loading": "Editor wird geladen …",
+  "notFound": "Diese Person gibt es nicht (mehr).",
+  "loadFailed": "Die Person konnte nicht geladen werden. Bitte lade die Seite neu."
+}

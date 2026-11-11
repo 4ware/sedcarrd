@@ -1,0 +1,71 @@
+{
+  "title": "Deine Personen",
+  "loading": "Personen werden geladen",
+  "error": "Deine Personen konnten nicht geladen werden. Bitte lade die Seite neu.",
+  "age": "{age} Jahre",
+  "empty": {
+    "title": "Noch keine Personen",
+    "description": "Lege mit „Person anlegen“ deine erste Person an."
+  },
+  "create": "Person anlegen",
+  "form": {
+    "metaTitle": "Person anlegen — Sedcarrd",
+    "title": "Person anlegen",
+    "label": "Neue Person",
+    "sections": {
+      "person": "Person"
+    },
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "professions": "Berufe",
+    "professionsHint": "Mehrere mit Komma trennen, z. B. Schauspielerin, Sprecherin.",
+    "birthYear": "Geburtsjahr",
+    "birthPlace": "Geburtsort",
+    "workingLocation": "Unmittelbarer Arbeitsort",
+    "submit": "Person speichern",
+    "cancel": "Abbrechen",
+    "errors": {
+      "firstNameRequired": "Bitte gib einen Vornamen ein.",
+      "lastNameRequired": "Bitte gib einen Nachnamen ein.",
+      "nameTooLong": "Höchstens 60 Zeichen.",
+      "tooLong": "Das ist zu lang.",
+      "birthYearInvalid": "Bitte gib ein vierstelliges Jahr ein, z. B. 1994.",
+      "saveFailed": "Die Person konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "listInvalid": "Höchstens 30 Einträge mit je bis zu 60 Zeichen.",
+      "heightInvalid": "Bitte gib eine Größe zwischen 50 und 250 cm ein.",
+      "weightInvalid": "Bitte gib ein Gewicht zwischen 20 und 300 kg ein."
+    }
+  },
+  "listHint": "Mehrere mit Komma trennen.",
+  "sections": {
+    "name": "Name",
+    "about": "Über die Person",
+    "skills": "Fähigkeiten",
+    "location": "Ort & Nationalität",
+    "appearance": "Aussehen"
+  },
+  "fields": {
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "professions": "Berufe",
+    "birthYear": "Geburtsjahr",
+    "birthPlace": "Geburtsort",
+    "languages": "Sprachen",
+    "dialects": "Dialekte",
+    "singing": "Gesang",
+    "dances": "Fähigkeiten (Tanz)",
+    "sports": "Fähigkeiten (Sport)",
+    "licences": "Lizenzen",
+    "workingLocation": "Unmittelbarer Arbeitsort",
+    "primaryResidence": "Bundesland (1. Wohnsitz)",
+    "nationalities": "Nationalität",
+    "heightCm": "Körpergröße (cm)",
+    "weightKg": "Gewicht (kg)",
+    "build": "Statur",
+    "clothingSize": "Konfektion",
+    "ethnicAppearance": "Ethn. Erscheinung",
+    "hairColor": "Haarfarbe",
+    "hairLength": "Haarlänge",
+    "eyeColor": "Augenfarbe"
+  }
+}

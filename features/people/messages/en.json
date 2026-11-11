@@ -1,0 +1,71 @@
+{
+  "title": "Your people",
+  "loading": "Loading people",
+  "error": "Your people could not be loaded. Please reload the page.",
+  "age": "{age} years",
+  "empty": {
+    "title": "No people yet",
+    "description": "Add your first person with “Add person”."
+  },
+  "create": "Add person",
+  "form": {
+    "metaTitle": "Add person — Sedcarrd",
+    "title": "Add person",
+    "label": "New person",
+    "sections": {
+      "person": "Person"
+    },
+    "firstName": "First name",
+    "lastName": "Last name",
+    "professions": "Professions",
+    "professionsHint": "Separate several with commas, e.g. Actress, Voice actress.",
+    "birthYear": "Year of birth",
+    "birthPlace": "Place of birth",
+    "workingLocation": "Working location",
+    "submit": "Save person",
+    "cancel": "Cancel",
+    "errors": {
+      "firstNameRequired": "Please enter a first name.",
+      "lastNameRequired": "Please enter a last name.",
+      "nameTooLong": "At most 60 characters.",
+      "tooLong": "That is too long.",
+      "birthYearInvalid": "Please enter a four-digit year, e.g. 1994.",
+      "saveFailed": "The person could not be saved. Please try again.",
+      "listInvalid": "At most 30 entries of up to 60 characters each.",
+      "heightInvalid": "Please enter a height between 50 and 250 cm.",
+      "weightInvalid": "Please enter a weight between 20 and 300 kg."
+    }
+  },
+  "listHint": "Separate several with commas.",
+  "sections": {
+    "name": "Name",
+    "about": "About",
+    "skills": "Skills",
+    "location": "Location & nationality",
+    "appearance": "Appearance"
+  },
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "professions": "Professions",
+    "birthYear": "Year of birth",
+    "birthPlace": "Place of birth",
+    "languages": "Languages",
+    "dialects": "Dialects",
+    "singing": "Singing",
+    "dances": "Dance",
+    "sports": "Sports",
+    "licences": "Licences",
+    "workingLocation": "Working location",
+    "primaryResidence": "Primary residence",
+    "nationalities": "Nationality",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)",
+    "build": "Build",
+    "clothingSize": "Clothing size",
+    "ethnicAppearance": "Ethnic appearance",
+    "hairColor": "Hair colour",
+    "hairLength": "Hair length",
+    "eyeColor": "Eye colour"
+  }
+}

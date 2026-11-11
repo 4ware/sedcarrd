@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { user } from "@/features/auth/db/schema";
 import { createDb } from "@/lib/db/client";
 import type { EmailMessage } from "@/lib/email/send-email";
+import { sessionCookie } from "@/test/session-cookie";
 import { app } from "../app";
 
 /** Outgoing mail is captured here instead of going to Resend. */
@@ -37,20 +38,6 @@ function post(path: string, body: unknown, cookie?: string) {
       body: JSON.stringify(body),
     }),
   );
-}
-
-/** Turns Set-Cookie response headers into a Cookie request header. */
-function sessionCookie(response: Response) {
-  // happy-dom (preloaded for component tests) swaps in its own Headers without reliable
-  // getSetCookie(), so fall back to the combined header.
-  const setCookies =
-    typeof response.headers.getSetCookie === "function" && response.headers.getSetCookie().length > 0
-      ? response.headers.getSetCookie()
-      : (response.headers.get("set-cookie") ?? "").split(/,(?=\s*[\w.-]+=)/);
-  return setCookies
-    .map((c) => c.split(";")[0]?.trim())
-    .filter(Boolean)
-    .join("; ");
 }
 
 // Runs against the migrated test database (`bun run db:up && bun run db:migrate:test`).
