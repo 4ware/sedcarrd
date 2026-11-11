@@ -1,0 +1,10 @@
+{
+  "Metadata": {
+    "title": "Sedcarrd — Deine Arbeit verdient einen guten Rahmen",
+    "description": "Eine durchdachte Seite für Headshot, Showreel, Credits und die Menschen hinter deiner nächsten Vorstellung."
+  },
+  "LocaleSwitcher": {
+    "label": "Sprache wählen",
+    "locale": { "de": "Deutsch", "en": "English" }
+  }
+}

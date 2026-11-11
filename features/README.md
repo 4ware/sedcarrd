@@ -8,8 +8,13 @@ features/<feature-name>/
 ├── db/
 │   └── schema.ts # Drizzle tables owned by this feature
 ├── lib/          # Server/client logic, data access, helpers
+├── messages/     # next-intl catalogs: de.json (default) + en.json
 └── index.ts      # Public API: the only file other code should import from
 ```
+
+Translations: a feature's `messages/<locale>.json` is registered under its namespace in
+[`i18n/messages.ts`](../i18n/messages.ts) and read with `useTranslations("<Namespace>")`.
+Feature-agnostic strings live in the root [`messages/`](../messages) folder.
 
 Rules:
 

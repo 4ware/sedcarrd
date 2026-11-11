@@ -1,0 +1,32 @@
+{
+  "header": {
+    "home": "sedcarrd home",
+    "nav": {
+      "why": "Why Sedcarrd",
+      "yourPage": "Your page",
+      "roles": "For every role",
+      "questions": "Questions"
+    },
+    "cta": "Make room for your work"
+  },
+  "hero": {
+    "eyebrow": "A home for your work, wherever it takes you",
+    "headline": { "line1": "Your work", "line2": "deserves a", "accent": "good frame." },
+    "lede": "One considered page for the headshot, reel, credits and people behind your next introduction.",
+    "primaryCta": "See what a page can hold",
+    "secondaryCta": "Take a look around",
+    "socialProof": "Built for the people who make the frame—and the stories inside it."
+  },
+  "profile": {
+    "role": "Actor",
+    "availability": "Available",
+    "quote": "Drawn to stories that make the familiar feel a little strange.",
+    "links": { "reel": "Reel", "credits": "Credits", "contact": "Contact" },
+    "open": "Open {name}'s page"
+  },
+  "showcase": {
+    "tape": "A page that feels like you.",
+    "stamp": { "top": "Your next scene", "bottom": "starts here" },
+    "linkNote": "A link worth keeping"
+  }
+}
