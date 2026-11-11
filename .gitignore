@@ -1,14 +1,17 @@
+node_modules
 .env*
+!.env.example
 .next
 next-env.d.ts
 /dist/
 .vinext/
 .cloudflare/
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
 # Playwright
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-tsconfig.tsbuildinfo
-node_modules
