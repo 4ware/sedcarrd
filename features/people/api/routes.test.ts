@@ -82,6 +82,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
       {
         id: expect.any(String),
         slug: expect.any(String),
+        thumbnailUrl: null,
         firstName: "Anna",
         lastName: "Albers",
         professions: [],
@@ -91,6 +92,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
       {
         id: expect.any(String),
         slug: expect.any(String),
+        thumbnailUrl: null,
         firstName: "Paula",
         lastName: "Zeller",
         professions: ["Schauspielerin", "Sängerin"],
@@ -114,6 +116,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
     expect(data).toEqual({
       id: expect.any(String),
       slug: expect.stringMatching(/^lena-vogt(-[\w-]{7,14})?$/),
+      thumbnailUrl: null,
       firstName: "Lena",
       lastName: "Vogt",
       professions: ["Schauspielerin"],
@@ -137,7 +140,8 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
     if (!own) throw new Error("expected a person");
 
     const { data: one } = await api.people({ id: own.id }).get({ headers: { cookie } });
-    expect(one).toMatchObject(own);
+    const { thumbnailUrl: _thumbnail, ...ownFields } = own;
+    expect(one).toMatchObject(ownFields);
     // The detail has every field, not just the list columns.
     expect(one).toMatchObject({ languages: [], heightCm: null, eyeColor: null });
 

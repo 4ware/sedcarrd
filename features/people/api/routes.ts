@@ -1,5 +1,5 @@
 import { deleteObject, headObject, presignGetObject } from "@better-upload/server/helpers";
-import { and, asc, count, eq, max, ne } from "drizzle-orm";
+import { and, asc, count, eq, inArray, max, ne } from "drizzle-orm";
 import { Elysia, t } from "elysia";
 import { THEME_KEYS } from "@/features/themes/registry";
 import type { Db } from "@/lib/db/client";
@@ -54,6 +54,8 @@ export const PersonSummary = t.Object({
   professions: t.Array(t.String()),
   birthYear: t.Nullable(t.Integer()),
   workingLocation: t.Nullable(t.String()),
+  /** Signed URL of the first photo (display order), or null without photos. */
+  thumbnailUrl: t.Nullable(t.String()),
 });
 
 /** An image with a short-lived signed URL (the bucket is private). */
@@ -150,6 +152,24 @@ async function withUniqueSlug<T>(pick: () => Promise<string>, write: (slug: stri
   }
 }
 
+/** Signed URLs of each person's first photo (by position), keyed by person id. One query for all. */
+async function firstImageUrls(db: Db, personIds: string[]) {
+  if (personIds.length === 0) return new Map<string, string>();
+  const firsts = await db
+    .selectDistinctOn([personImage.personId], { personId: personImage.personId, key: personImage.key })
+    .from(personImage)
+    .where(inArray(personImage.personId, personIds))
+    .orderBy(personImage.personId, asc(personImage.position), asc(personImage.createdAt));
+  const { client, bucket } = getStorage();
+  const entries = await Promise.all(
+    firsts.map(
+      async ({ personId, key }) =>
+        [personId, await presignGetObject(client, { bucket, key, expiresIn: SIGNED_URL_TTL })] as const,
+    ),
+  );
+  return new Map(entries);
+}
+
 /** The person if it belongs to the user. */
 async function findOwnPerson(db: Db, userId: string, personId: string) {
   const [found] = await db
@@ -207,12 +227,18 @@ export const peopleRoutes = new Elysia({ name: "routes/people" })
   .use(dbPlugin)
   .get(
     "/people",
-    async ({ db, user }) =>
-      await db
+    async ({ db, user }) => {
+      const people = await db
         .select(summaryColumns)
         .from(person)
         .where(eq(person.userId, user.id))
-        .orderBy(asc(person.lastName), asc(person.firstName)),
+        .orderBy(asc(person.lastName), asc(person.firstName));
+      const thumbnails = await firstImageUrls(
+        db,
+        people.map((p) => p.id),
+      );
+      return people.map((p) => ({ ...p, thumbnailUrl: thumbnails.get(p.id) ?? null }));
+    },
     {
       auth: true,
       response: { 200: t.Array(PersonSummary), 401: Message },
@@ -229,7 +255,8 @@ export const peopleRoutes = new Elysia({ name: "routes/people" })
             .values({ ...body, slug, userId: user.id })
             .returning(summaryColumns),
       );
-      return created as NonNullable<typeof created>;
+      // A new person has no photos yet.
+      return { ...(created as NonNullable<typeof created>), thumbnailUrl: null };
     },
     {
       auth: true,

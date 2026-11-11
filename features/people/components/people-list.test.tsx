@@ -9,6 +9,7 @@ type Summary = {
   professions: string[];
   birthYear: number | null;
   workingLocation: string | null;
+  thumbnailUrl: string | null;
 };
 type QueryState =
   | { isPending: true; isError: false; data: undefined }
@@ -49,8 +50,9 @@ describe("PeopleList", () => {
           professions: ["Schauspielerin", "Sängerin"],
           birthYear: new Date().getFullYear() - 26,
           workingLocation: "Madrid",
+          thumbnailUrl: "https://storage.example/paula.jpg",
         },
-        { id: "2", firstName: "Anna", lastName: "Albers", professions: [], birthYear: null, workingLocation: null },
+        { id: "2", firstName: "Anna", lastName: "Albers", professions: [], birthYear: null, workingLocation: null, thumbnailUrl: null },
       ],
     };
     renderApp(<PeopleList />);
@@ -64,7 +66,12 @@ describe("PeopleList", () => {
     );
     expect(items[0]).toHaveTextContent("Schauspielerin, Sängerin");
     expect(items[0]).toHaveTextContent("26 years · Madrid");
-    expect(items[1]).toHaveTextContent(/^Anna Albers$/);
+    // First photo as thumbnail, initials without photos.
+    expect(items[0]?.querySelector("img")).toHaveAttribute("src", "https://storage.example/paula.jpg");
+    expect(items[0]?.querySelector("img")).toHaveAttribute("alt", "");
+    expect(items[1]?.querySelector("img")).toBeNull();
+    expect(within(items[1] as HTMLElement).getByTestId("person-initials")).toHaveTextContent("AA");
+    expect(within(items[1] as HTMLElement).getByRole("link")).toHaveAccessibleName("Anna Albers");
   });
 
   test("reports a failed request", () => {

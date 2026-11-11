@@ -54,26 +54,48 @@ export function PeopleList() {
             return (
               <li
                 key={person.id}
-                className="relative flex flex-col gap-1 px-4 py-3 has-focus-visible:ring-2 has-focus-visible:ring-ring hover:bg-muted/50"
+                className="relative flex items-center gap-4 px-4 py-3 has-focus-visible:ring-2 has-focus-visible:ring-ring hover:bg-muted/50"
               >
-                <p className="font-medium">
-                  {/* The stretched link makes the whole row open the person in the editor. */}
-                  <Link
-                    href={`/dashboard/editor/${person.id}`}
-                    className="underline-offset-4 after:absolute after:inset-0 hover:underline focus-visible:outline-none"
-                  >
-                    {person.firstName} {person.lastName}
-                  </Link>
-                </p>
-                {person.professions.length > 0 ? (
-                  <p className="text-sm">{person.professions.join(", ")}</p>
-                ) : null}
-                {details.length > 0 ? <p className="text-sm text-muted-foreground">{details.join(" · ")}</p> : null}
+                <PersonThumbnail url={person.thumbnailUrl} firstName={person.firstName} lastName={person.lastName} />
+                <div className="flex min-w-0 flex-col gap-1">
+                  <p className="font-medium">
+                    {/* The stretched link makes the whole row open the person in the editor. */}
+                    <Link
+                      href={`/dashboard/editor/${person.id}`}
+                      className="underline-offset-4 after:absolute after:inset-0 hover:underline focus-visible:outline-none"
+                    >
+                      {person.firstName} {person.lastName}
+                    </Link>
+                  </p>
+                  {person.professions.length > 0 ? (
+                    <p className="text-sm">{person.professions.join(", ")}</p>
+                  ) : null}
+                  {details.length > 0 ? <p className="text-sm text-muted-foreground">{details.join(" · ")}</p> : null}
+                </div>
               </li>
             );
           })}
         </ul>
       )}
     </section>
+  );
+}
+
+/**
+ * The person's first photo as a small square, or their initials. Decorative (alt=""): the name is
+ * right next to it.
+ */
+function PersonThumbnail({ url, firstName, lastName }: { url: string | null; firstName: string; lastName: string }) {
+  if (url) {
+    return <img src={url} alt="" loading="lazy" className="size-14 shrink-0 rounded-md object-cover" />;
+  }
+  return (
+    <span
+      aria-hidden="true"
+      data-testid="person-initials"
+      className="flex size-14 shrink-0 items-center justify-center rounded-md bg-muted font-serif text-lg font-semibold text-muted-foreground"
+    >
+      {`${firstName.trim().charAt(0)}${lastName.trim().charAt(0)}`.toUpperCase()}
+    </span>
   );
 }
