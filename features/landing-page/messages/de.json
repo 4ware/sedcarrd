@@ -9,11 +9,16 @@
     },
     "cta": "Schaffe Raum für deine Arbeit",
     "login": "Anmelden",
-    "dashboard": "Zum Dashboard"
+    "dashboard": "Zum Dashboard",
+    "navLabel": "Hauptnavigation"
   },
   "hero": {
     "eyebrow": "Ein Zuhause für deine Arbeit, wohin sie dich auch führt",
-    "headline": { "line1": "Deine Arbeit", "line2": "verdient einen", "accent": "guten Rahmen." },
+    "headline": {
+      "line1": "Deine Arbeit",
+      "line2": "verdient einen",
+      "accent": "guten Rahmen."
+    },
     "lede": "Eine durchdachte Seite für Headshot, Showreel, Credits und die Menschen hinter deiner nächsten Vorstellung.",
     "primaryCta": "Sieh, was eine Seite fassen kann",
     "secondaryCta": "Schau dich um",
@@ -23,12 +28,19 @@
     "role": "Schauspielerin",
     "availability": "Verfügbar",
     "quote": "Angezogen von Geschichten, die das Vertraute ein wenig fremd wirken lassen.",
-    "links": { "reel": "Showreel", "credits": "Credits", "contact": "Kontakt" },
+    "links": {
+      "reel": "Showreel",
+      "credits": "Credits",
+      "contact": "Kontakt"
+    },
     "open": "Seite von {name} öffnen"
   },
   "showcase": {
     "tape": "Eine Seite, die sich nach dir anfühlt.",
-    "stamp": { "top": "Deine nächste Szene", "bottom": "beginnt hier" },
+    "stamp": {
+      "top": "Deine nächste Szene",
+      "bottom": "beginnt hier"
+    },
     "linkNote": "Ein Link, den man behält"
   }
 }

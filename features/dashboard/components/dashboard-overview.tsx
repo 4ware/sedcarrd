@@ -9,10 +9,12 @@ export function DashboardOverview({ name, children }: { name: string; children?:
   return (
     <>
       <DashboardHeader title={t("title")} />
-      <div className="flex flex-col gap-2 p-6">
-        <h2 className="font-serif text-3xl font-semibold">{t("greeting", { name })}</h2>
+      <section aria-labelledby="dashboard-greeting" className="flex flex-col gap-2 p-6">
+        <h2 id="dashboard-greeting" className="font-serif text-3xl font-semibold">
+          {t("greeting", { name })}
+        </h2>
         <p className="text-muted-foreground">{t("description")}</p>
-      </div>
+      </section>
       {children ? <div className="flex flex-col gap-8 px-6 pb-6">{children}</div> : null}
     </>
   );

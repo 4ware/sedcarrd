@@ -97,6 +97,7 @@ function PhotosBlock({
   return (
     <Section section="photos" className={cn("p-1", className)}>
       <PhotoGallery
+        title={profile.photosTitle}
         images={profile.images}
         placeholder={profile.placeholders.photos}
         imageClassName={preset.photo ?? "rounded-lg"}

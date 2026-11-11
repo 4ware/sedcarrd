@@ -37,6 +37,7 @@ export function SunsetTheme({ profile, Section }: ThemeProps) {
             <span aria-hidden="true" className="ml-2 h-1 w-14 rounded-full bg-white/60" />
             <Section section="photos" className="p-1">
               <PhotoGallery
+                title={profile.photosTitle}
                 images={profile.images}
                 placeholder={profile.placeholders.photos}
                 imageClassName="rounded-2xl border-4 border-white shadow-lg"

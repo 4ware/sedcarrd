@@ -1,7 +1,7 @@
+import { useId } from "react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
 import type { SampleProfile } from "../../lib/content";
 import { AvailabilityBadge } from "./availability-badge";
 import { ProfileLinkButton } from "./profile-link-button";
@@ -14,16 +14,19 @@ import { ProfileQuote } from "./profile-quote";
 /** A sample Sedcarrd profile page, styled like a printed card. */
 export function ProfileCard({ profile, className }: { profile: SampleProfile; className?: string }) {
   const t = useTranslations("LandingPage.profile");
+  const nameId = useId();
 
   return (
-    <Card role="article" className={cn("gap-0 p-3 shadow-2xl shadow-black/25 ring-0 sm:p-5", className)}>
+    // A real <article> (a self-contained profile), named by the person's heading.
+    <article aria-labelledby={nameId} className={className}>
+      <Card className="gap-0 p-3 shadow-2xl shadow-black/25 ring-0 sm:p-5">
       <ProfilePhoto photo={profile.photo}>
         <div className="absolute right-4 top-4">
           <AvailabilityBadge>{t("availability")}</AvailabilityBadge>
         </div>
         <div className="absolute inset-x-4 bottom-5 flex flex-col gap-2 sm:inset-x-6 sm:bottom-7">
           <ProfileMeta role={t("role")} locations={profile.locations} />
-          <ProfileName>{profile.name}</ProfileName>
+          <ProfileName id={nameId}>{profile.name}</ProfileName>
         </div>
       </ProfilePhoto>
       <CardContent className="flex flex-col gap-5 px-2 pt-6 sm:px-4">
@@ -34,6 +37,7 @@ export function ProfileCard({ profile, className }: { profile: SampleProfile; cl
         <ProfileLinks links={profile.links.map((key) => t(`links.${key}`))} />
         <ProfileLinkButton href={`/${profile.slug}`} label={t("open", { name: profile.name })} />
       </CardFooter>
-    </Card>
+      </Card>
+    </article>
   );
 }

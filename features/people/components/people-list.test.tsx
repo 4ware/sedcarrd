@@ -27,7 +27,7 @@ describe("PeopleList", () => {
 
   test("shows placeholders while loading", () => {
     renderApp(<PeopleList />);
-    expect(screen.getByLabelText("Loading people")).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByRole("status")).toHaveTextContent("Loading people");
   });
 
   test("explains the empty state", () => {
@@ -72,6 +72,8 @@ describe("PeopleList", () => {
     expect(items[1]?.querySelector("img")).toBeNull();
     expect(within(items[1] as HTMLElement).getByTestId("person-initials")).toHaveTextContent("AA");
     expect(within(items[1] as HTMLElement).getByRole("link")).toHaveAccessibleName("Anna Albers");
+    // Each person is a heading inside the "Your people" section.
+    expect(screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent)).toEqual(["Paula Zeller", "Anna Albers"]);
   });
 
   test("reports a failed request", () => {

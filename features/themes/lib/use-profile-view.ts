@@ -51,6 +51,7 @@ export function useProfileView(values: PersonFieldsValues, images: PersonImageVi
     professions: splitList(values.professions),
     born,
     basicsTitle: t("basics"),
+    photosTitle: t("photos"),
     emptyValue: "—",
     images: images.map((image, index) => ({
       id: image.id,

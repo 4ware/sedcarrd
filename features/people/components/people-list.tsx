@@ -28,9 +28,12 @@ export function PeopleList() {
       </div>
 
       {people.isPending ? (
-        <div className="flex flex-col gap-2" aria-busy="true" aria-label={t("loading")}>
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
+        <div className="flex flex-col gap-2">
+          <p role="status" className="sr-only">
+            {t("loading")}
+          </p>
+          <Skeleton aria-hidden="true" className="h-16 w-full" />
+          <Skeleton aria-hidden="true" className="h-16 w-full" />
         </div>
       ) : people.isError ? (
         <p role="alert" className="text-destructive">
@@ -58,7 +61,7 @@ export function PeopleList() {
               >
                 <PersonThumbnail url={person.thumbnailUrl} firstName={person.firstName} lastName={person.lastName} />
                 <div className="flex min-w-0 flex-col gap-1">
-                  <p className="font-medium">
+                  <h3 className="font-medium">
                     {/* The stretched link makes the whole row open the person in the editor. */}
                     <Link
                       href={`/dashboard/editor/${person.id}`}
@@ -66,7 +69,7 @@ export function PeopleList() {
                     >
                       {person.firstName} {person.lastName}
                     </Link>
-                  </p>
+                  </h3>
                   {person.professions.length > 0 ? (
                     <p className="text-sm">{person.professions.join(", ")}</p>
                   ) : null}
