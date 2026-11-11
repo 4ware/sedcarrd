@@ -14,6 +14,9 @@ export default defineConfig({
     env: {
       ASSETS: bindings.assets(),
       IMAGES: bindings.images(),
+      // Postgres connection string. Locally read from .env; in production set it with
+      // `wrangler secret put DATABASE_URL` (or switch to a Hyperdrive binding).
+      DATABASE_URL: bindings.secret(),
     },
   }),
 });

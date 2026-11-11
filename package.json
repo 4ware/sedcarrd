@@ -13,6 +13,7 @@
     "elysia": "1.4.31",
     "lucide-react": "^1.72.0",
     "next-intl": "^4.15.0",
+    "postgres": "^4.1.1",
     "radix-ui": "^1.8.1",
     "react": "latest",
     "react-dom": "latest",
@@ -53,6 +54,14 @@
     "test:watch": "bun test --watch",
     "test:e2e": "playwright test",
     "test:e2e:watch": "playwright test --ui",
-    "test:all": "bun test && playwright test"
+    "test:all": "bun test && playwright test",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:generate": "bun --bun drizzle-kit generate",
+    "db:migrate": "bun --bun drizzle-kit migrate",
+    "db:migrate:test": "DB_TARGET=test bun --bun drizzle-kit migrate",
+    "db:push": "bun --bun drizzle-kit push",
+    "db:check": "bun --bun drizzle-kit check",
+    "db:studio": "bun --bun drizzle-kit studio"
   }
 }
