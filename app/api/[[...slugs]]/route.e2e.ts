@@ -18,3 +18,8 @@ test("GET /api/hello validates its query", async ({ request }) => {
 test("unknown API routes return 404", async ({ request }) => {
   expect((await request.get("/api/does-not-exist")).status()).toBe(404);
 });
+
+test("health endpoints report the worker and the database as up", async ({ request }) => {
+  expect(await (await request.get("/api/health")).json()).toEqual({ status: "ok" });
+  expect(await (await request.get("/api/health/db")).json()).toEqual({ database: "ok" });
+});
