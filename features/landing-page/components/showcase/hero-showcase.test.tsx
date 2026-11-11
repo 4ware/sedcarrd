@@ -1,9 +1,10 @@
 import { expect, test } from "bun:test";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import { renderWithIntl } from "@/test/render-with-intl";
 import { HeroShowcase } from "./hero-showcase";
 
 test("renders the card with its surrounding notes", () => {
-  render(<HeroShowcase />);
+  renderWithIntl(<HeroShowcase />);
 
   expect(screen.getByRole("article")).toHaveTextContent("Mara Ellison");
   expect(screen.getByText("A page that feels like you.")).toBeInTheDocument();

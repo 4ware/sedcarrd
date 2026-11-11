@@ -1,4 +1,4 @@
 [test]
 # Register a DOM (happy-dom) and Testing Library matchers before any test file runs.
-preload = ["./test/happydom.ts", "./test/setup.ts"]
+preload = ["./test/happydom.ts", "./test/next-navigation-mock.ts", "./test/setup.ts"]
 # Playwright specs (*.e2e.ts) are not picked up by bun test; only *.test.ts(x) / *.spec.ts(x) are.

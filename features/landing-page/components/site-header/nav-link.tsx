@@ -1,7 +1,6 @@
 import { NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu";
-import type { NavItem } from "../../lib/content";
 
-export function NavLink({ label, href }: NavItem) {
+export function NavLink({ label, href }: { label: string; href: string }) {
   return (
     <NavigationMenuItem>
       <NavigationMenuLink
