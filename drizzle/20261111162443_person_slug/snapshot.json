@@ -1,0 +1,81 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "bffc4f4a-6f50-45e8-83ad-6e2b42c59f5e",
+  "prevIds": [
+    "5c12ed17-69f3-4127-b9a1-59f2f2cbefca"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "person",
+        "slug"
+      ],
+      "writes": [
+        "s|col|public.person.slug",
+        "n|col|public.person.slug",
+        "e|col|public.person.slug"
+      ],
+      "reads": [
+        "n|tbl|public.person",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_unique",
+      "statementTarget": [
+        "table",
+        "public",
+        "person"
+      ],
+      "writes": [
+        "s|uq|public.person.person_slug_key",
+        "n|uq|public.person.person_slug_key",
+        "e|uq|public.person.person_slug_key",
+        "n|con|public.person.person_slug_key",
+        "n|rel|public.person_slug_key"
+      ],
+      "reads": [
+        "n|tbl|public.person",
+        "n|sch|public",
+        "n|col|public.person.slug"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "person",
+        "name": "slug",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "person",
+        "name": "person_slug_key",
+        "nameExplicit": false,
+        "columns": [
+          "slug"
+        ],
+        "nullsNotDistinct": false,
+        "entityType": "uniques"
+      }
+    }
+  ]
+}
