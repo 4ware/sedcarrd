@@ -50,6 +50,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
     await db.insert(person).values([
       {
         userId: owner.id,
+        slug: `seed-paula-${crypto.randomUUID()}`,
         firstName: "Paula",
         lastName: "Zeller",
         professions: ["Schauspielerin", "Sängerin"],
@@ -58,8 +59,8 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
         languages: ["Englisch", "Spanisch"],
         heightCm: 166,
       },
-      { userId: owner.id, firstName: "Anna", lastName: "Albers" },
-      { userId: other.id, firstName: "Not", lastName: "Mine" },
+      { userId: owner.id, slug: `seed-anna-${crypto.randomUUID()}`, firstName: "Anna", lastName: "Albers" },
+      { userId: other.id, slug: `seed-not-${crypto.randomUUID()}`, firstName: "Not", lastName: "Mine" },
     ]);
   });
 
@@ -80,6 +81,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
     expect(data).toEqual([
       {
         id: expect.any(String),
+        slug: expect.any(String),
         firstName: "Anna",
         lastName: "Albers",
         professions: [],
@@ -88,6 +90,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
       },
       {
         id: expect.any(String),
+        slug: expect.any(String),
         firstName: "Paula",
         lastName: "Zeller",
         professions: ["Schauspielerin", "Sängerin"],
@@ -110,6 +113,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
     expect(error).toBeNull();
     expect(data).toEqual({
       id: expect.any(String),
+      slug: expect.stringMatching(/^lena-vogt(-[\w-]{7,14})?$/),
       firstName: "Lena",
       lastName: "Vogt",
       professions: ["Schauspielerin"],
@@ -181,6 +185,51 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
 
     expect((await api.people({ id: "not-a-uuid" }).get({ headers: { cookie } })).error?.status).toBe(422);
     expect((await api.people({ id: own.id }).get()).error?.status).toBe(401);
+  });
+
+  test("slugs: the plain name when free, + shortid when taken, renewed only when the name changes", async () => {
+    const create = (firstName: string, lastName: string) =>
+      api.people.post(
+        { firstName, lastName, professions: [], birthYear: null, birthPlace: null, workingLocation: null },
+        { headers: { cookie } },
+      );
+    // A name nobody else in the shared test database has.
+    const last = `Weiß ${crypto.randomUUID().slice(0, 8)}`;
+    const base = `juergen-weiss-${last.slice(5)}`;
+
+    // First one gets the plain slug, the next ones a shortid.
+    const first = (await create("Jürgen", last)).data;
+    const second = (await create("Jürgen", last)).data;
+    expect(first?.slug).toBe(base);
+    expect(second?.slug).toMatch(new RegExp(`^${base}-[\\w-]{7,14}$`));
+
+    // Saving other fields (or the same name) keeps the slug.
+    const same = await api.people({ id: second?.id as string }).patch(
+      { firstName: "Jürgen", lastName: last, heightCm: 180 },
+      { headers: { cookie } },
+    );
+    expect(same.data?.slug).toBe(second?.slug);
+
+    // A new name gets a new slug; the old plain slug is free again for the next one.
+    const renamed = await api.people({ id: first?.id as string }).patch({ firstName: "Mara" }, { headers: { cookie } });
+    expect(renamed.data?.slug).toBe(`mara-weiss-${last.slice(5)}`);
+    const third = (await create("Jürgen", last)).data;
+    expect(third?.slug).toBe(base);
+
+    // Parallel creates with the same new name: one plain slug, the rest with shortids, all distinct.
+    const parallel = await Promise.all(Array.from({ length: 6 }, () => create("Zoë", last)));
+    const slugs = parallel.map((r) => r.data?.slug as string);
+    expect(new Set(slugs).size).toBe(6);
+    expect(slugs.filter((slug) => slug === `zoe-weiss-${last.slice(5)}`)).toHaveLength(1);
+    expect(slugs.every((slug) => slug.startsWith(`zoe-weiss-${last.slice(5)}`))).toBe(true);
+  });
+
+  test("the database rejects a duplicate slug", async () => {
+    const [existing] = await db.select({ slug: person.slug }).from(person).where(eq(person.userId, ids[0] as string));
+    // Wrapped in an async function: a Drizzle query is only thenable, not a Promise.
+    const duplicate = async () =>
+      db.insert(person).values({ userId: ids[0] as string, slug: existing?.slug as string, firstName: "X", lastName: "Y" });
+    await expect(duplicate()).rejects.toThrow();
   });
 
   test("people are deleted together with their user", async () => {

@@ -1,5 +1,5 @@
 import { deleteObject, headObject, presignGetObject } from "@better-upload/server/helpers";
-import { and, asc, count, eq, max } from "drizzle-orm";
+import { and, asc, count, eq, max, ne } from "drizzle-orm";
 import { Elysia, t } from "elysia";
 import { THEME_KEYS } from "@/features/themes/registry";
 import type { Db } from "@/lib/db/client";
@@ -8,6 +8,7 @@ import { authPlugin } from "@/server/plugins/auth";
 import { dbPlugin } from "@/server/plugins/db";
 import { person, personImage } from "../db/schema";
 import { IMAGE_TYPES, MAX_IMAGE_SIZE, MAX_IMAGES_PER_PERSON, MAX_IMAGES_PER_UPLOAD } from "../lib/images";
+import { keepsSlug, personSlugBase, withShortid } from "../lib/slug";
 import { personImagePrefix } from "./upload";
 
 const nonBlank = (maxLength: number) => t.String({ minLength: 1, maxLength, pattern: "\\S" });
@@ -47,6 +48,7 @@ const Theme = t.UnionEnum(THEME_KEYS);
 /** One entry of the dashboard list. */
 export const PersonSummary = t.Object({
   id: t.String(),
+  slug: t.String(),
   firstName: t.String(),
   lastName: t.String(),
   professions: t.Array(t.String()),
@@ -60,6 +62,7 @@ export const PersonImage = t.Object({ id: t.String(), name: t.String(), url: t.S
 /** A person with every field, their theme and images (editor). */
 export const PersonDetail = t.Object({
   id: t.String(),
+  slug: t.String(),
   ...personFields,
   theme: Theme,
   images: t.Array(PersonImage),
@@ -108,6 +111,39 @@ async function listImages(db: Db, personId: string) {
   );
 }
 
+/** Whether another person already uses `slug`. */
+async function slugTaken(db: Db, slug: string, excludeId?: string) {
+  const [row] = await db
+    .select({ id: person.id })
+    .from(person)
+    .where(and(eq(person.slug, slug), excludeId ? ne(person.id, excludeId) : undefined))
+    .limit(1);
+  return Boolean(row);
+}
+
+/** The plain name slug if it is free, otherwise the name slug with "-<shortid>". */
+async function newSlug(db: Db, name: { firstName: string; lastName: string }, excludeId?: string) {
+  const base = personSlugBase(name.firstName, name.lastName);
+  return (await slugTaken(db, base, excludeId)) ? withShortid(base) : base;
+}
+
+/** True for Postgres' unique violation on person.slug (two saves claimed the same slug at once). */
+function isSlugConflict(error: unknown) {
+  const cause = (error as { cause?: { code?: string; constraint_name?: string } })?.cause;
+  return cause?.code === "23505" && cause.constraint_name === "person_slug_key";
+}
+
+/** Runs a write that sets a slug; on a slug collision it picks again (the check then sees it taken). */
+async function withUniqueSlug<T>(pick: () => Promise<string>, write: (slug: string) => Promise<T>): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await write(await pick());
+    } catch (error) {
+      if (!isSlugConflict(error) || attempt >= 5) throw error;
+    }
+  }
+}
+
 /** The person if it belongs to the user. */
 async function findOwnPerson(db: Db, userId: string, personId: string) {
   const [found] = await db
@@ -120,6 +156,7 @@ const Message = t.Object({ message: t.String() });
 
 const summaryColumns = {
   id: person.id,
+  slug: person.slug,
   firstName: person.firstName,
   lastName: person.lastName,
   professions: person.professions,
@@ -129,6 +166,7 @@ const summaryColumns = {
 
 const detailColumns = {
   id: person.id,
+  slug: person.slug,
   firstName: person.firstName,
   lastName: person.lastName,
   professions: person.professions,
@@ -177,10 +215,14 @@ export const peopleRoutes = new Elysia({ name: "routes/people" })
   .post(
     "/people",
     async ({ db, user, body }) => {
-      const [created] = await db
-        .insert(person)
-        .values({ ...body, userId: user.id })
-        .returning(summaryColumns);
+      const [created] = await withUniqueSlug(
+        () => newSlug(db, body),
+        (slug) =>
+          db
+            .insert(person)
+            .values({ ...body, slug, userId: user.id })
+            .returning(summaryColumns),
+      );
       return created as NonNullable<typeof created>;
     },
     {
@@ -209,11 +251,24 @@ export const peopleRoutes = new Elysia({ name: "routes/people" })
   .patch(
     "/people/:id",
     async ({ db, user, params, body, status }) => {
-      const [updated] = await db
-        .update(person)
-        .set(body)
-        .where(and(eq(person.id, params.id), eq(person.userId, user.id)))
-        .returning(detailColumns);
+      const [current] = await db
+        .select({ firstName: person.firstName, lastName: person.lastName, slug: person.slug })
+        .from(person)
+        .where(and(eq(person.id, params.id), eq(person.userId, user.id)));
+      if (!current) return status(404, { message: "Person not found" });
+
+      // A new slug only when the name's slug changes; links stay stable otherwise.
+      const next = { firstName: body.firstName ?? current.firstName, lastName: body.lastName ?? current.lastName };
+      const keep = keepsSlug(current.slug, current, next);
+      const [updated] = await withUniqueSlug(
+        async () => (keep ? current.slug : newSlug(db, next, params.id)),
+        (slug) =>
+          db
+            .update(person)
+            .set({ ...body, slug })
+            .where(and(eq(person.id, params.id), eq(person.userId, user.id)))
+            .returning(detailColumns),
+      );
       if (!updated) return status(404, { message: "Person not found" });
       return { ...updated, images: await listImages(db, updated.id) };
     },

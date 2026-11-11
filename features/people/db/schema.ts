@@ -23,6 +23,8 @@ export const person = pgTable(
     // ── Header ──────────────────────────────────────────────────────────────────
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
+    /** URL slug from the name ("lena-vogt", "lena-vogt-2", …), unique across all people; set by the API on save. */
+    slug: text("slug").notNull().unique(),
     /** e.g. Schauspielerin, Synchronschauspielerin, Sängerin, Sprecherin. */
     professions: text("professions").array().notNull().default(emptyList()),
     /** Only the year is shown ("Geboren 2000 … (26 Jahre)"); the age is derived from it. */

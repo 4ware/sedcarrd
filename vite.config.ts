@@ -1,4 +1,5 @@
-import { defineConfig } from "vite";
+import { fileURLToPath } from "node:url";
+import { defineConfig, type Plugin } from "vite";
 import vinext from "vinext";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { imagesOptimizer } from "@vinext/cloudflare/images/images-optimizer";
@@ -21,13 +22,43 @@ const serverOnlyDeps = [
   "postgres",
   "elysia",
   "@elysiajs/eden",
+  "@better-upload/server",
+  "@better-upload/server/clients",
+  "@better-upload/server/helpers",
+  "shortid",
+  "ts-slug",
 ];
+
+/**
+ * shortid's Node build reads the cluster worker id via `require("cluster")`, which Cloudflare Workers
+ * don't provide. Use the package's own browser variant of that file (it exports 0) everywhere.
+ */
+function shortidWithoutCluster() {
+  const browserVariant = fileURLToPath(
+    new URL("./node_modules/shortid/lib/util/cluster-worker-id-browser.js", import.meta.url),
+  );
+  return {
+    name: "shortid-without-cluster",
+    enforce: "pre",
+    resolveId(source: string, importer: string | undefined) {
+      if (source === "./util/cluster-worker-id" && importer?.includes("/shortid/lib/")) return browserVariant;
+      return null;
+    },
+  } satisfies Plugin;
+}
 
 export default defineConfig({
   environments: {
-    rsc: { optimizeDeps: { include: serverOnlyDeps } },
+    rsc: {
+      optimizeDeps: {
+        include: serverOnlyDeps,
+        // Pre-bundling (Rolldown) doesn't run the Vite plugins below: apply the same swap there.
+        rolldownOptions: { plugins: [shortidWithoutCluster()] },
+      },
+    },
   },
   plugins: [
+    shortidWithoutCluster(),
     vinext({
       images: { optimizer: imagesOptimizer() },
     }),
