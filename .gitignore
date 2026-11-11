@@ -1,6 +1,4 @@
-node_modules
 .env*
-!.env.example
 .next
 next-env.d.ts
 /dist/
@@ -13,3 +11,4 @@ next-env.d.ts
 /blob-report/
 /playwright/.cache/
 tsconfig.tsbuildinfo
+node_modules

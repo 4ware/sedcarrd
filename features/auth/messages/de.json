@@ -1,0 +1,36 @@
+{
+  "backHome": "Zurück zur sedcarrd Startseite",
+  "login": {
+    "metaTitle": "Anmelden — Sedcarrd",
+    "title": "Willkommen zurück",
+    "description": "Melde dich an, um zu deinem Dashboard zu gelangen.",
+    "submit": "Anmelden",
+    "switchPrompt": "Noch kein Konto?",
+    "switchLink": "Registrieren"
+  },
+  "signup": {
+    "metaTitle": "Registrieren — Sedcarrd",
+    "title": "Konto erstellen",
+    "description": "Ein paar Angaben, und deine Seite kann entstehen.",
+    "submit": "Konto erstellen",
+    "switchPrompt": "Schon ein Konto?",
+    "switchLink": "Anmelden"
+  },
+  "fields": {
+    "name": "Name",
+    "namePlaceholder": "Mara Ellison",
+    "email": "E-Mail",
+    "emailPlaceholder": "du@beispiel.de",
+    "password": "Passwort",
+    "passwordHint": "Mindestens 8 Zeichen."
+  },
+  "errors": {
+    "invalidCredentials": "E-Mail oder Passwort ist falsch.",
+    "userExists": "Für diese E-Mail gibt es bereits ein Konto.",
+    "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "passwordTooShort": "Dein Passwort braucht mindestens 8 Zeichen.",
+    "passwordTooLong": "Dein Passwort darf höchstens 128 Zeichen haben.",
+    "tooManyRequests": "Zu viele Versuche. Bitte warte einen Moment und versuche es erneut.",
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+  }
+}

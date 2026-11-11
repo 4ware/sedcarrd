@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { accountRoutes, handleAuthRequest } from "./routes/auth";
 import { healthRoutes } from "./routes/health";
 import { helloRoutes } from "./routes/hello";
 
@@ -11,6 +12,10 @@ import { helloRoutes } from "./routes/hello";
  * - aot: false              → no generated route handlers
  * - normalize: "typebox"    → no generated exact-mirror cleaners
  */
-export const app = new Elysia({ prefix: "/api", aot: false, normalize: "typebox" }).use(helloRoutes).use(healthRoutes);
+export const app = new Elysia({ prefix: "/api", aot: false, normalize: "typebox" })
+  .mount("/auth", handleAuthRequest)
+  .use(helloRoutes)
+  .use(healthRoutes)
+  .use(accountRoutes);
 
 export type App = typeof app;

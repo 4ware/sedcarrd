@@ -17,6 +17,9 @@ export default defineConfig({
       // Postgres connection string. Locally read from .env; in production set it with
       // `wrangler secret put DATABASE_URL` (or switch to a Hyperdrive binding).
       DATABASE_URL: bindings.secret(),
+      // Better Auth: signing secret + public base URL (`wrangler secret put …` in production).
+      BETTER_AUTH_SECRET: bindings.secret(),
+      BETTER_AUTH_URL: bindings.secret(),
     },
   }),
 });

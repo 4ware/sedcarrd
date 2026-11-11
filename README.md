@@ -32,6 +32,27 @@ bun run dev
 - `bun run db:generate`: create a migration from `features/*/db/schema.ts` into `drizzle/`.
 - `bun run db:migrate` / `db:migrate:test`: apply migrations to the dev / test database.
 - `bun run db:push` / `db:check` / `db:studio`: push schema directly, check migrations, open Drizzle Studio.
+- `bun run auth:generate`: regenerate `features/auth/db/schema.ts` from the Better Auth config (after adding
+  Better Auth plugins), then `bun run db:generate` for the migration.
+
+## Authentication
+
+Better Auth (email + password) lives in `features/auth`. Its endpoints are served by Elysia at `/api/auth/*`;
+`GET /api/me` returns the signed-in user (use `auth: true` on any Elysia route to require a session).
+Pages: `/login`, `/signup` and the protected `/dashboard` (all localized, e.g. `/en/login`).
+`BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` come from `.env` locally and are Worker secrets in production.
+
+## End-to-end tests and the database
+
+The auth e2e tests sign real users up, so the server under test needs a migrated database. To run them
+against the throw-away test database:
+
+```sh
+bun run db:migrate:test
+bun run build
+DATABASE_URL=$TEST_DATABASE_URL BETTER_AUTH_URL=http://localhost:5199 bunx vite preview --port 5199 &
+PLAYWRIGHT_BASE_URL=http://localhost:5199 bun run test:e2e
+```
 
 ## Production database
 
