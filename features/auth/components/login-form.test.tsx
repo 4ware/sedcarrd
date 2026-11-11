@@ -62,4 +62,9 @@ describe("LoginForm", () => {
     );
     expect(routerMock.replace).not.toHaveBeenCalled();
   });
+
+  test("links to the forgot-password page", () => {
+    renderApp(<LoginForm />, { locale: "de" });
+    expect(screen.getByRole("link", { name: "Passwort vergessen?" })).toHaveAttribute("href", "/forgot-password");
+  });
 });

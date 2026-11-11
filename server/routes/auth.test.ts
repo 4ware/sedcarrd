@@ -118,4 +118,41 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("auth API", () => {
     expect(await again.json()).toMatchObject({ token: null });
     expect(outbox).toHaveLength(0);
   });
+
+  test("forgot password: reset link, new password, old one rejected, link single-use", async () => {
+    const redirectTo = `${origin}/en/reset-password`;
+    const newPassword = "an entirely new passphrase";
+
+    // Unknown emails get the same answer and no email.
+    const unknown = await post("/api/auth/request-password-reset", { email: `nobody-${crypto.randomUUID()}@example.com`, redirectTo });
+    expect(unknown.status).toBe(200);
+    expect(outbox).toHaveLength(0);
+
+    const request = await post("/api/auth/request-password-reset", { email, redirectTo });
+    expect(request.status).toBe(200);
+    expect(await request.json()).toEqual(await unknown.json());
+    expect(outbox).toHaveLength(1);
+    expect(outbox[0]).toMatchObject({ to: email, subject: "Reset your password" });
+
+    // The emailed link checks the token and opens our page with it.
+    const link = outbox[0]?.text.match(/https?:\/\/\S+\/api\/auth\/reset-password\/\S+/)?.[0];
+    if (!link) throw new Error("no reset link in the email");
+    const opened = await app.fetch(new Request(`http://localhost${new URL(link).pathname}${new URL(link).search}`));
+    expect(opened.status).toBe(302);
+    const target = new URL(opened.headers.get("location") as string);
+    expect(`${target.origin}${target.pathname}`).toBe(redirectTo);
+    const token = target.searchParams.get("token") as string;
+    expect(token).toBeTruthy();
+
+    const reset = await post("/api/auth/reset-password", { token, newPassword });
+    expect(reset.status).toBe(200);
+
+    expect((await post("/api/auth/sign-in/email", { email, password })).status).toBe(401);
+    expect((await post("/api/auth/sign-in/email", { email, password: newPassword })).status).toBe(200);
+
+    // Single use.
+    const again = await post("/api/auth/reset-password", { token, newPassword: "yet another passphrase" });
+    expect(again.status).toBe(400);
+    expect(await again.json()).toMatchObject({ code: "INVALID_TOKEN" });
+  });
 });

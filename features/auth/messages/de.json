@@ -6,7 +6,8 @@
     "description": "Melde dich an, um zu deinem Dashboard zu gelangen.",
     "submit": "Anmelden",
     "switchPrompt": "Noch kein Konto?",
-    "switchLink": "Registrieren"
+    "switchLink": "Registrieren",
+    "forgotPassword": "Passwort vergessen?"
   },
   "signup": {
     "metaTitle": "Registrieren — Sedcarrd",
@@ -24,6 +25,32 @@
     "resend": "Link erneut senden",
     "resent": "Ein neuer Link ist unterwegs.",
     "switchPrompt": "Schon bestätigt?",
+    "switchLink": "Anmelden"
+  },
+  "forgotPassword": {
+    "metaTitle": "Passwort vergessen — Sedcarrd",
+    "title": "Passwort vergessen?",
+    "description": "Gib die E-Mail-Adresse deines Kontos ein. Wir schicken dir einen Link, mit dem du ein neues Passwort festlegst.",
+    "submit": "Link zum Zurücksetzen senden",
+    "sentTitle": "Schau in dein Postfach",
+    "sentDescription": "Wenn es ein Konto für <strong>{email}</strong> gibt, ist ein Link zum Zurücksetzen unterwegs. Er ist eine Stunde gültig.",
+    "sentHint": "Nichts angekommen? Sieh im Spam-Ordner nach oder fordere den Link erneut an.",
+    "tryAgain": "Andere E-Mail-Adresse verwenden",
+    "switchPrompt": "Doch wieder eingefallen?",
+    "switchLink": "Anmelden"
+  },
+  "resetPassword": {
+    "metaTitle": "Neues Passwort — Sedcarrd",
+    "title": "Neues Passwort festlegen",
+    "description": "Wähle ein neues Passwort für dein Konto. Danach wirst du überall abgemeldet.",
+    "submit": "Passwort speichern",
+    "successTitle": "Passwort geändert",
+    "successDescription": "Dein neues Passwort ist gespeichert. Melde dich jetzt damit an.",
+    "toLogin": "Zur Anmeldung",
+    "invalidTitle": "Link ungültig",
+    "invalidDescription": "Dieser Link ist abgelaufen oder wurde schon benutzt. Fordere einfach einen neuen an.",
+    "requestNew": "Neuen Link anfordern",
+    "switchPrompt": "Passwort wieder eingefallen?",
     "switchLink": "Anmelden"
   },
   "fields": {
@@ -46,6 +73,7 @@
     "emailNotVerified": "Bitte bestätige zuerst deine E-Mail-Adresse. Wir haben dir gerade einen neuen Link geschickt.",
     "tooManyRequests": "Zu viele Versuche. Bitte warte einen Moment und versuche es erneut.",
     "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
-    "passwordMismatch": "Die Passwörter stimmen nicht überein."
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+    "invalidToken": "Der Link ist abgelaufen oder wurde schon benutzt. Fordere bitte einen neuen an."
   }
 }

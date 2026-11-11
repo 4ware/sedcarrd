@@ -14,6 +14,8 @@ export const authClientMock = {
   },
   signOut: mock(() => ok()),
   sendVerificationEmail: mock((_input: { email: string; callbackURL?: string }) => ok()),
+  requestPasswordReset: mock((_input: { email: string; redirectTo?: string }) => ok()),
+  resetPassword: mock((_input: { token: string; newPassword: string }) => ok()),
 };
 
 export function resetAuthClientMock() {
@@ -22,6 +24,8 @@ export function resetAuthClientMock() {
     authClientMock.signUp.email,
     authClientMock.signOut,
     authClientMock.sendVerificationEmail,
+    authClientMock.requestPasswordReset,
+    authClientMock.resetPassword,
   ]) {
     fn.mockReset();
     fn.mockImplementation(ok);

@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import type { Db } from "@/lib/db/client";
 import { sendEmail } from "@/lib/email/send-email";
 import * as schema from "../db/schema";
+import { resetPasswordEmail } from "./reset-password-email";
 import { verificationEmail } from "./verification-email";
 
 function isLocalUrl(url: string | undefined) {
@@ -30,6 +31,17 @@ export function createAuth(db: Db) {
       // No session until the address is confirmed. Sign-up then answers a taken email with the
       // same generic success as a new one, so it cannot be used to probe for accounts.
       requireEmailVerification: true,
+      // Forgot password: the emailed link is valid for an hour, single use, and logs out everywhere.
+      resetPasswordTokenExpiresIn: 60 * 60,
+      revokeSessionsOnPasswordReset: true,
+      sendResetPassword: async ({ user, url }) => {
+        try {
+          await sendEmail(resetPasswordEmail({ to: user.email, name: user.name, url }));
+        } catch (error) {
+          // The answer to the request stays the same either way (no hint whether the account exists).
+          console.error("[auth] could not send the password reset email", error);
+        }
+      },
     },
     emailVerification: {
       sendOnSignUp: true,
