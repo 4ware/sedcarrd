@@ -8,13 +8,21 @@ const ok = async (): Promise<Result> => ({ data: { ok: true }, error: null });
  * so every test uses this one object; call `resetAuthClientMock()` in `beforeEach`.
  */
 export const authClientMock = {
-  signIn: { email: mock((_input: { email: string; password: string }) => ok()) },
-  signUp: { email: mock((_input: { name: string; email: string; password: string }) => ok()) },
+  signIn: { email: mock((_input: { email: string; password: string; callbackURL?: string }) => ok()) },
+  signUp: {
+    email: mock((_input: { name: string; email: string; password: string; callbackURL?: string }) => ok()),
+  },
   signOut: mock(() => ok()),
+  sendVerificationEmail: mock((_input: { email: string; callbackURL?: string }) => ok()),
 };
 
 export function resetAuthClientMock() {
-  for (const fn of [authClientMock.signIn.email, authClientMock.signUp.email, authClientMock.signOut]) {
+  for (const fn of [
+    authClientMock.signIn.email,
+    authClientMock.signUp.email,
+    authClientMock.signOut,
+    authClientMock.sendVerificationEmail,
+  ]) {
     fn.mockReset();
     fn.mockImplementation(ok);
   }
