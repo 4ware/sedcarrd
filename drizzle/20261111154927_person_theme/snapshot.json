@@ -1,0 +1,47 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "69ed8a10-fb22-4905-a63c-62bb9abe049d",
+  "prevIds": [
+    "009eea41-c91e-4212-a7de-694060774010"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "person",
+        "theme"
+      ],
+      "writes": [
+        "s|col|public.person.theme",
+        "n|col|public.person.theme",
+        "e|col|public.person.theme"
+      ],
+      "reads": [
+        "n|tbl|public.person",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "person",
+        "name": "theme",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "'classic'",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    }
+  ]
+}

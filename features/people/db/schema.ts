@@ -1,5 +1,6 @@
 import { index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { user } from "@/features/auth/db/schema";
+import { DEFAULT_THEME, type ThemeKey } from "@/features/themes/registry";
 
 /** Empty Postgres text array, the default for every list column. */
 const emptyList = () => [] as string[];
@@ -60,6 +61,10 @@ export const person = pgTable(
     /** Haarlänge. */
     hairLength: text("hair_length"),
     eyeColor: text("eye_color"),
+
+    // ── Presentation ────────────────────────────────────────────────────────────
+    /** Theme of the person's page (keys in features/themes/registry.ts; validated by the API). */
+    theme: text("theme").$type<ThemeKey>().notNull().default(DEFAULT_THEME),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

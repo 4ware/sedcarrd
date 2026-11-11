@@ -11,7 +11,8 @@
   "toolbar": {
     "label": "Editor",
     "edit": "Edit name",
-    "dashboard": "Back to the dashboard"
+    "dashboard": "Back to the dashboard",
+    "theme": "Change theme"
   },
   "drawer": {
     "eyebrowHeader": "Profile",
@@ -23,8 +24,11 @@
       "about": "Shown below the name.",
       "skills": "Languages, singing, dance, sports and licences.",
       "location": "Where the person works and lives.",
-      "appearance": "Height, build and looks for casting."
-    }
+      "appearance": "Height, build and looks for casting.",
+      "theme": "Pick a look for the page. It is previewed right away and saved with “Done”."
+    },
+    "eyebrowDesign": "Design",
+    "themeTitle": "Theme"
   },
   "loading": "Loading the editor…",
   "notFound": "This person does not exist (anymore).",
