@@ -6,7 +6,7 @@ name: sedcarrd
 services:
   # Development database (persistent).
   db:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -24,7 +24,7 @@ services:
 
   # Throw-away database for automated tests (no volume: wiped whenever the container is recreated).
   db-test:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
