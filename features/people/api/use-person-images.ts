@@ -6,13 +6,18 @@ import { unwrap } from "@/lib/api/unwrap";
 import type { PersonImageView } from "../lib/images";
 import { peopleKeys } from "./queries";
 
-/** Puts a fresh image list into the cached person (the editor reads images from there). */
+/**
+ * Puts a fresh image list into the cached person (the editor reads images from there) and refreshes
+ * the people list (its thumbnail is the first photo).
+ */
 function useSetImages(personId: string) {
   const queryClient = useQueryClient();
-  return (images: PersonImageView[]) =>
+  return (images: PersonImageView[]) => {
     queryClient.setQueryData(peopleKeys.detail(personId), (person: { images: PersonImageView[] } | undefined) =>
       person ? { ...person, images } : person,
     );
+    return queryClient.invalidateQueries({ queryKey: peopleKeys.list() });
+  };
 }
 
 /**

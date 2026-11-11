@@ -79,11 +79,19 @@ describe.skipIf(!process.env.TEST_DATABASE_URL || !process.env.S3_ENDPOINT)("per
     const again = await api.people({ id: personId }).images.post({ images: [{ key, name: "x.png" }] }, { headers: { cookie } });
     expect(again.data).toHaveLength(1);
 
+    // The people list shows the first photo as thumbnail.
+    const { data: list } = await api.people.get({ headers: { cookie } });
+    const thumbnail = list?.find((p) => p.id === personId)?.thumbnailUrl;
+    expect(thumbnail).toContain("X-Amz-Signature");
+    expect((await fetch(thumbnail as string)).status).toBe(200);
+
     const imageId = images?.[0]?.id as string;
     const { data: afterDelete } = await api.people({ id: personId }).images({ imageId }).delete(undefined, { headers: { cookie } });
     expect(afterDelete).toEqual([]);
     // The object is gone from S3 too.
     expect((await fetch(detail?.images[0]?.url as string)).status).toBe(404);
+    const { data: after } = await api.people.get({ headers: { cookie } });
+    expect(after?.find((p) => p.id === personId)?.thumbnailUrl).toBeNull();
   });
 
   test("keeps upload order across several images", async () => {
@@ -95,6 +103,10 @@ describe.skipIf(!process.env.TEST_DATABASE_URL || !process.env.S3_ENDPOINT)("per
       { headers: { cookie } },
     );
     expect(data?.map((i) => i.name)).toEqual(["first.png", "second.png"]);
+    // The thumbnail is the first photo in display order.
+    const { data: list } = await api.people.get({ headers: { cookie } });
+    const thumbnail = list?.find((p) => p.id === personId)?.thumbnailUrl as string;
+    expect(new URL(thumbnail).pathname).toEndWith(first.split("/").pop() as string);
   });
 
   test("upload URLs only for signed-in owners and only for images", async () => {

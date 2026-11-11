@@ -46,9 +46,23 @@ test("photos upload straight to storage, show up in the theme and can be deleted
   await expect(photos).toHaveCount(2);
   await page.screenshot({ path: "test-results/photos-noir.png", animations: "disabled", fullPage: true });
 
-  // Delete one.
+  // The dashboard list shows the first photo as thumbnail.
+  await page.goto("/dashboard");
+  const row = page.getByRole("listitem").filter({ hasText: "Lena Vogt" });
+  const thumbnail = row.locator("img");
+  await expect(thumbnail).toBeVisible();
+  await expect.poll(() => thumbnail.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await page.screenshot({ path: "test-results/people-list-thumbnail.png", animations: "disabled" });
+
+  // Delete both: the editor and the list show none.
+  await page.goto(`/dashboard/editor/${id}`);
   await sitePage.getByRole("button", { name: "Fotos bearbeiten" }).click();
   await drawer.getByRole("button", { name: "Foto 1 löschen" }).click();
   await expect(thumbnails).toHaveCount(1);
   await expect(photos).toHaveCount(1);
+  await drawer.getByRole("button", { name: "Foto 1 löschen" }).click();
+  await expect(thumbnails).toHaveCount(0);
+  await page.goto("/dashboard");
+  await expect(row.locator("img")).toHaveCount(0);
+  await expect(row.getByTestId("person-initials")).toHaveText("LV");
 });
