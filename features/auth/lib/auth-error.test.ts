@@ -6,6 +6,7 @@ describe("AuthError", () => {
     ["INVALID_EMAIL_OR_PASSWORD", 401, "invalidCredentials"],
     ["USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL", 422, "userExists"],
     ["PASSWORD_TOO_SHORT", 400, "passwordTooShort"],
+    ["EMAIL_NOT_VERIFIED", 403, "emailNotVerified"],
     ["SOMETHING_NEW", 500, "generic"],
     [undefined, 429, "tooManyRequests"],
   ] as const)("maps %s (%i) to %s", (code, status, key) => {

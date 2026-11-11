@@ -17,6 +17,7 @@ const native = {
   ReadableStream: globalThis.ReadableStream,
 };
 
-GlobalRegistrator.register();
+// A real origin (not about:blank) so code building absolute URLs from window.location works.
+GlobalRegistrator.register({ url: "http://localhost:5173/" });
 
 Object.assign(globalThis, native);

@@ -42,9 +42,17 @@ Better Auth (email + password) lives in `features/auth`. Its endpoints are serve
 Pages: `/login`, `/signup` and the protected `/dashboard` (all localized, e.g. `/en/login`).
 `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` come from `.env` locally and are Worker secrets in production.
 
+Sign-up requires a confirmed email address: Better Auth mails a verification link (via Resend,
+`lib/email/send-email.ts`) and creates no session until it is opened; the link signs the user in and leads to
+the dashboard. Logging in while unconfirmed fails and mails a fresh link. `RESEND_API_KEY` is a Worker secret;
+emails come from `hello@` the Resend-verified `RESEND_DOMAIN` (`cloudflare.config.ts`, `.env`). Without a key, emails
+are only logged. `bun test` never sends email.
+
 ## End-to-end tests and the database
 
-The auth e2e tests sign real users up, so the server under test needs a migrated database. To run them
+The auth e2e tests sign real users up, so the server under test needs a migrated database. They confirm
+emails by signing the verification link with `BETTER_AUTH_SECRET` from `.env`, and sign up with Resend test
+addresses (`delivered+…@resend.dev`), so real sends are harmless. To run them
 against the throw-away test database:
 
 ```sh

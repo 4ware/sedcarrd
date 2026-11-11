@@ -5,6 +5,7 @@ export type AuthErrorKey =
   | "invalidEmail"
   | "passwordTooShort"
   | "passwordTooLong"
+  | "emailNotVerified"
   | "tooManyRequests"
   | "generic";
 
@@ -16,6 +17,7 @@ const codeToKey: Record<string, AuthErrorKey> = {
   INVALID_EMAIL: "invalidEmail",
   PASSWORD_TOO_SHORT: "passwordTooShort",
   PASSWORD_TOO_LONG: "passwordTooLong",
+  EMAIL_NOT_VERIFIED: "emailNotVerified",
 };
 
 /** A failed Better Auth call, carrying a translatable message key. */

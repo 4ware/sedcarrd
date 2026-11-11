@@ -16,6 +16,16 @@
     "switchPrompt": "Already have an account?",
     "switchLink": "Log in"
   },
+  "checkEmail": {
+    "title": "Check your inbox",
+    "description": "One more step and your account is ready.",
+    "sentTo": "We sent a confirmation link to <strong>{email}</strong>. Open it to activate your account.",
+    "hint": "Nothing there after a few minutes? Check your spam folder or have the link sent again.",
+    "resend": "Send link again",
+    "resent": "A new link is on its way.",
+    "switchPrompt": "Already confirmed?",
+    "switchLink": "Log in"
+  },
   "fields": {
     "name": "Name",
     "namePlaceholder": "Mara Ellison",
@@ -33,6 +43,7 @@
     "invalidEmail": "Please enter a valid email address.",
     "passwordTooShort": "Your password needs at least 8 characters.",
     "passwordTooLong": "Your password can have at most 128 characters.",
+    "emailNotVerified": "Please confirm your email address first. We've just sent you a new link.",
     "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
     "generic": "Something went wrong. Please try again.",
     "passwordMismatch": "The passwords don't match."

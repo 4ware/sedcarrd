@@ -1,7 +1,9 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { createDb, type Db } from "@/lib/db/client";
+import type { Db } from "@/lib/db/client";
+import { sendEmail } from "@/lib/email/send-email";
 import * as schema from "../db/schema";
+import { verificationEmail } from "./verification-email";
 
 function isLocalUrl(url: string | undefined) {
   return !!url && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/.test(url);
@@ -25,7 +27,26 @@ export function createAuth(db: Db) {
       enabled: true,
       minPasswordLength: 8,
       maxPasswordLength: 128,
-      autoSignIn: true,
+      // No session until the address is confirmed. Sign-up then answers a taken email with the
+      // same generic success as a new one, so it cannot be used to probe for accounts.
+      requireEmailVerification: true,
+    },
+    emailVerification: {
+      sendOnSignUp: true,
+      // Signing in while unverified fails with EMAIL_NOT_VERIFIED and mails a fresh link.
+      sendOnSignIn: true,
+      // Following the link signs the user in and redirects to the sign-up callbackURL.
+      autoSignInAfterVerification: true,
+      expiresIn: 60 * 60 * 24,
+      // Awaited (no background task handler): a Worker may stop once the response is sent.
+      sendVerificationEmail: async ({ user, url }) => {
+        try {
+          await sendEmail(verificationEmail({ to: user.email, name: user.name, url }));
+        } catch (error) {
+          // Keep sign-up working when the mail provider fails; the user can request a new link.
+          console.error("[auth] could not send the verification email", error);
+        }
+      },
     },
     session: {
       // Re-validate against the database at most every 5 minutes; saves a query per request.

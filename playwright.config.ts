@@ -1,5 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// The auth e2e tests sign email-verification links with BETTER_AUTH_SECRET, like the server does.
+// Variables already set in the environment win over .env.
+try {
+  process.loadEnvFile(".env");
+} catch {
+  // No .env (e.g. CI with real environment variables).
+}
+
 const PORT = 5173;
 // Set PLAYWRIGHT_BASE_URL to test an already running server (e.g. `vite preview` or a deployment).
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;

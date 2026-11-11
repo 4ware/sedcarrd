@@ -21,7 +21,11 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: "Log in" }));
 
     await waitFor(() => expect(routerMock.replace).toHaveBeenCalledWith("/en/dashboard"));
-    expect(authClientMock.signIn.email).toHaveBeenCalledWith({ email: "mara@example.com", password: "correct horse" });
+    expect(authClientMock.signIn.email).toHaveBeenCalledWith({
+      email: "mara@example.com",
+      password: "correct horse",
+      callbackURL: "http://localhost:5173/en/dashboard",
+    });
     expect(routerMock.refresh).toHaveBeenCalled();
   });
 
@@ -38,6 +42,24 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: "Anmelden" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("E-Mail oder Passwort ist falsch.");
+    expect(routerMock.replace).not.toHaveBeenCalled();
+  });
+
+  test("asks unverified users to confirm their email first", async () => {
+    authClientMock.signIn.email.mockImplementationOnce(async () => ({
+      data: null,
+      error: { status: 403, code: "EMAIL_NOT_VERIFIED" },
+    }));
+    renderApp(<LoginForm />);
+
+    const user = userEvent.setup();
+    await user.type(screen.getByLabelText("Email"), "new@example.com");
+    await user.type(screen.getByLabelText("Password"), "correct horse");
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Please confirm your email address first. We've just sent you a new link.",
+    );
     expect(routerMock.replace).not.toHaveBeenCalled();
   });
 });

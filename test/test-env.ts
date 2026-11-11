@@ -5,3 +5,6 @@
 if (process.env.TEST_DATABASE_URL) {
   process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
 }
+
+/** Tests never send real email: without a key, lib/email/send-email.ts only logs. */
+delete process.env.RESEND_API_KEY;

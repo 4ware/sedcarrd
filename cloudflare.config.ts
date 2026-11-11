@@ -20,6 +20,10 @@ export default defineConfig({
       // Better Auth: signing secret + public base URL (`wrangler secret put …` in production).
       BETTER_AUTH_SECRET: bindings.secret(),
       BETTER_AUTH_URL: bindings.secret(),
+      // Resend API key for transactional email (`wrangler secret put RESEND_API_KEY` in production).
+      RESEND_API_KEY: bindings.secret(),
+      // Domain verified in Resend; emails are sent from hello@<domain>.
+      RESEND_DOMAIN: bindings.text("sedcarrd.com"),
     },
   }),
 });
