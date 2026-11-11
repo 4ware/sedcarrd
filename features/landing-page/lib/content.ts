@@ -13,7 +13,8 @@ export const navItems: NavItem[] = [
   { key: "questions", href: "#questions" },
 ];
 
-export const headerCtaHref = "#get-started";
+/** App routes the landing page links to (locale prefixes are added by next-intl's Link). */
+export const accountLinks = { signup: "/signup", login: "/login", dashboard: "/dashboard" } as const;
 
 export const heroLinks = { primary: "#your-page", secondary: "#why" } as const;
 

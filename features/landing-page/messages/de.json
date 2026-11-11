@@ -7,7 +7,9 @@
       "roles": "Für jede Rolle",
       "questions": "Fragen"
     },
-    "cta": "Schaffe Raum für deine Arbeit"
+    "cta": "Schaffe Raum für deine Arbeit",
+    "login": "Anmelden",
+    "dashboard": "Zum Dashboard"
   },
   "hero": {
     "eyebrow": "Ein Zuhause für deine Arbeit, wohin sie dich auch führt",

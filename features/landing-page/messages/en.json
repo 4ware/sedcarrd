@@ -7,7 +7,9 @@
       "roles": "For every role",
       "questions": "Questions"
     },
-    "cta": "Make room for your work"
+    "cta": "Make room for your work",
+    "login": "Log in",
+    "dashboard": "Go to dashboard"
   },
   "hero": {
     "eyebrow": "A home for your work, wherever it takes you",

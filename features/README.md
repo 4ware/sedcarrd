@@ -13,7 +13,8 @@ features/<feature-name>/
 │   └── schema.ts # Drizzle tables owned by this feature
 ├── lib/          # Server/client logic, data access, helpers
 ├── messages/     # next-intl catalogs: de.json (default) + en.json
-└── index.ts      # Public API: the only file other code should import from
+├── index.ts      # Public API (client-safe): the only file other code should import from
+└── server.ts     # Optional server-only API (sessions, DB access) for Server Components
 ```
 
 Translations: a feature's `messages/<locale>.json` is registered under its namespace in

@@ -1,0 +1,11 @@
+{
+  "metaTitle": "Dashboard — Sedcarrd",
+  "home": "Dashboard home",
+  "nav": { "overview": "Overview" },
+  "user": { "menuLabel": "Account menu", "logout": "Log out" },
+  "overview": {
+    "title": "Overview",
+    "greeting": "Hello, {name}",
+    "description": "Your page will take shape here soon."
+  }
+}
