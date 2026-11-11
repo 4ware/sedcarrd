@@ -6,7 +6,8 @@
     "description": "Log in to get to your dashboard.",
     "submit": "Log in",
     "switchPrompt": "No account yet?",
-    "switchLink": "Sign up"
+    "switchLink": "Sign up",
+    "forgotPassword": "Forgot your password?"
   },
   "signup": {
     "metaTitle": "Sign up — Sedcarrd",
@@ -24,6 +25,32 @@
     "resend": "Send link again",
     "resent": "A new link is on its way.",
     "switchPrompt": "Already confirmed?",
+    "switchLink": "Log in"
+  },
+  "forgotPassword": {
+    "metaTitle": "Forgot password — Sedcarrd",
+    "title": "Forgot your password?",
+    "description": "Enter your account's email address. We'll send you a link to choose a new password.",
+    "submit": "Send reset link",
+    "sentTitle": "Check your inbox",
+    "sentDescription": "If there is an account for <strong>{email}</strong>, a reset link is on its way. It is valid for one hour.",
+    "sentHint": "Nothing there? Check your spam folder or request the link again.",
+    "tryAgain": "Use a different email address",
+    "switchPrompt": "Remembered it?",
+    "switchLink": "Log in"
+  },
+  "resetPassword": {
+    "metaTitle": "New password — Sedcarrd",
+    "title": "Choose a new password",
+    "description": "Pick a new password for your account. You'll be logged out everywhere afterwards.",
+    "submit": "Save password",
+    "successTitle": "Password changed",
+    "successDescription": "Your new password is saved. Log in with it now.",
+    "toLogin": "Go to login",
+    "invalidTitle": "Link not valid",
+    "invalidDescription": "This link has expired or was already used. Just request a new one.",
+    "requestNew": "Request a new link",
+    "switchPrompt": "Remembered your password?",
     "switchLink": "Log in"
   },
   "fields": {
@@ -46,6 +73,7 @@
     "emailNotVerified": "Please confirm your email address first. We've just sent you a new link.",
     "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
     "generic": "Something went wrong. Please try again.",
-    "passwordMismatch": "The passwords don't match."
+    "passwordMismatch": "The passwords don't match.",
+    "invalidToken": "The link has expired or was already used. Please request a new one."
   }
 }

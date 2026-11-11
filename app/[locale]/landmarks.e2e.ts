@@ -15,7 +15,7 @@ test("public pages have one main landmark, one h1 and named navigation", async (
   await expect(page.getByRole("region", { name: "Deine Arbeit verdient einen guten Rahmen." })).toBeVisible();
   await expect(page.getByRole("article", { name: "Mara Ellison" })).toBeVisible();
 
-  for (const path of ["/login", "/signup"]) {
+  for (const path of ["/login", "/signup", "/forgot-password"]) {
     await page.goto(path);
     await expectPageOutline(page);
     // The logo sits in the page header, the form alone in <main>.
