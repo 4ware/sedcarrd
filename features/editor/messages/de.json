@@ -2,19 +2,14 @@
   "metaTitle": "Editor — Sedcarrd",
   "canvas": {
     "label": "Deine Seite",
-    "edit": "{section} bearbeiten",
-    "namePlaceholder": "Dein Name",
-    "aboutPlaceholder": "Berufe, Geburtsjahr und -ort",
-    "basics": "Basisdaten",
-    "born": "{hasYear, select, yes {Geboren {year}} other {Geboren}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} Jahre)} other {}}",
-    "photosPlaceholder": "Fotos hinzufügen",
-    "photoAlt": "{name}, Foto {index}"
+    "edit": "{section} bearbeiten"
   },
   "toolbar": {
     "label": "Editor",
     "edit": "Name bearbeiten",
     "dashboard": "Zurück zum Dashboard",
-    "theme": "Design ändern"
+    "theme": "Design ändern",
+    "publicPage": "Öffentliche Seite ansehen (neuer Tab)"
   },
   "drawer": {
     "eyebrowHeader": "Profil",
@@ -27,7 +22,7 @@
       "skills": "Sprachen, Gesang, Tanz, Sport und Lizenzen.",
       "location": "Wo die Person arbeitet und wohnt.",
       "appearance": "Größe, Statur und Aussehen fürs Casting.",
-      "theme": "Wähle einen Look für die Seite. Er wird sofort angezeigt und mit „Fertig“ gespeichert.",
+      "theme": "Wähle einen Look für die Seite. Er wird sofort gespeichert und auf der öffentlichen Seite angezeigt.",
       "photos": "Fotos werden gespeichert, sobald sie hochgeladen sind."
     },
     "eyebrowDesign": "Gestaltung",

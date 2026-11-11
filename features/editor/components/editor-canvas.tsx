@@ -2,8 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { PersonFieldsValues, PersonImageView } from "@/features/people";
-import { type ProfileSectionKey, type ThemeKey, ThemedProfile } from "@/features/themes";
-import { useProfileView } from "../lib/use-profile-view";
+import { type ProfileSectionKey, type ThemeKey, ThemedProfile, useProfileView } from "@/features/themes";
 import { EditableSection, EditorSectionsContext } from "./editable-section";
 
 type EditorCanvasProps = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboardIcon, PaletteIcon, PencilIcon } from "lucide-react";
+import { ExternalLinkIcon, LayoutDashboardIcon, PaletteIcon, PencilIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -10,9 +10,11 @@ import { Link } from "@/i18n/navigation";
 type EditorToolbarProps = {
   onEdit: (trigger: HTMLButtonElement) => void;
   onTheme: (trigger: HTMLButtonElement) => void;
+  /** The person's slug: links to their public page. */
+  slug: string;
 };
 
-export function EditorToolbar({ onEdit, onTheme }: EditorToolbarProps) {
+export function EditorToolbar({ onEdit, onTheme, slug }: EditorToolbarProps) {
   const t = useTranslations("Editor.toolbar");
 
   return (
@@ -50,6 +52,16 @@ export function EditorToolbar({ onEdit, onTheme }: EditorToolbarProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">{t("theme")}</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button asChild variant="ghost" size="icon-lg" className="hover:bg-background/15 hover:text-background">
+              <Link href={`/people/${slug}`} target="_blank" aria-label={t("publicPage")}>
+                <ExternalLinkIcon />
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">{t("publicPage")}</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>

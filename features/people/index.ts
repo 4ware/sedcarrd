@@ -1,4 +1,5 @@
 /** Client-safe entry point of the people feature. */
+export { peopleKeys, publicPersonQueryOptions } from "./api/queries";
 export { usePerson } from "./api/use-person";
 export { useDeletePersonImage, useRegisterPersonImages } from "./api/use-person-images";
 export { type UpdatePersonInput, useUpdatePerson } from "./api/use-update-person";

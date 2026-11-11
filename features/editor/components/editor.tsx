@@ -58,6 +58,7 @@ export function Editor({ personId }: { personId: string }) {
       initialValues={toPersonFieldsValues(person.data)}
       initialTheme={person.data.theme}
       images={person.data.images}
+      slug={person.data.slug}
     />
   );
 }
@@ -72,14 +73,18 @@ type WorkspaceProps = {
   initialTheme: ThemeKey;
   /** Live from the person query (uploads/deletes update it right away). */
   images: PersonImageView[];
+  /** Live from the person query (renaming can change it). */
+  slug: string;
 };
 
 /** Live page, floating toolbar, and a left drawer with a section's fields or the theme picker. */
-function EditorWorkspace({ personId, initialValues, initialTheme, images }: WorkspaceProps) {
+function EditorWorkspace({ personId, initialValues, initialTheme, images, slug }: WorkspaceProps) {
   const [panel, setPanel] = useState<EditorPanel | null>(null);
-  // The saved theme, and the one shown while picking (previewed live, saved with "Done").
-  const [savedTheme, setSavedTheme] = useState(initialTheme);
+  // The theme is saved as soon as it is picked, so the public page always matches the editor.
   const [theme, setTheme] = useState(initialTheme);
+  const savedTheme = useRef(initialTheme);
+  // Only the latest pick may revert on failure (fast clicks overlap).
+  const lastPick = useRef(0);
   // Whatever opened the drawer (page element or toolbar button) gets focus back when it closes.
   const triggerRef = useRef<HTMLElement | null>(null);
   const updatePerson = useUpdatePerson(personId);
@@ -98,18 +103,16 @@ function EditorWorkspace({ personId, initialValues, initialTheme, images }: Work
     updatePerson.reset();
     setPanel(next);
   };
-  const close = () => {
-    // Leaving the theme picker without "Done" discards the preview.
-    if (panel === "theme") setTheme(savedTheme);
-    setPanel(null);
-  };
-  const saveTheme = async () => {
+  const close = () => setPanel(null);
+  const chooseTheme = async (next: ThemeKey) => {
+    const pick = ++lastPick.current;
+    setTheme(next);
     try {
-      await updatePerson.mutateAsync({ theme });
-      setSavedTheme(theme);
-      setPanel(null);
+      await updatePerson.mutateAsync({ theme: next });
+      savedTheme.current = next;
     } catch {
-      // Shown in the drawer via updatePerson.isError.
+      // Back to what is saved; the drawer shows the error (updatePerson.isError).
+      if (pick === lastPick.current) setTheme(savedTheme.current);
     }
   };
 
@@ -122,7 +125,11 @@ function EditorWorkspace({ personId, initialValues, initialTheme, images }: Work
         selected={panel === "theme" ? null : panel}
         onEdit={open}
       />
-      <EditorToolbar onEdit={(trigger) => open("name", trigger)} onTheme={(trigger) => open("theme", trigger)} />
+      <EditorToolbar
+        onEdit={(trigger) => open("name", trigger)}
+        onTheme={(trigger) => open("theme", trigger)}
+        slug={slug}
+      />
       <EditorDrawer
         form={form}
         panel={panel}
@@ -130,8 +137,7 @@ function EditorWorkspace({ personId, initialValues, initialTheme, images }: Work
         returnFocusRef={triggerRef}
         saveFailed={updatePerson.isError}
         theme={theme}
-        onThemeChange={setTheme}
-        onSaveTheme={saveTheme}
+        onThemeChange={chooseTheme}
         savingTheme={updatePerson.isPending}
         personId={personId}
         images={images}

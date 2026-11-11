@@ -224,6 +224,21 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)("GET /api/people", () => {
     expect(slugs.every((slug) => slug.startsWith(`zoe-weiss-${last.slice(5)}`))).toBe(true);
   });
 
+  test("public profile by slug: no session needed, no owner in the response, 404 when unknown", async () => {
+    const { data: created } = await api.people.post(
+      { firstName: "Öffentlich", lastName: `Person ${crypto.randomUUID().slice(0, 6)}`, professions: ["Sängerin"], birthYear: 1990, birthPlace: null, workingLocation: "Köln" },
+      { headers: { cookie } },
+    );
+    const slug = created?.slug as string;
+
+    const { data, error } = await api.public.people({ slug }).get();
+    expect(error).toBeNull();
+    expect(data).toMatchObject({ slug, firstName: "Öffentlich", professions: ["Sängerin"], theme: "classic", images: [] });
+    expect(data).not.toHaveProperty("userId");
+
+    expect((await api.public.people({ slug: `${slug}-missing` }).get()).error?.status).toBe(404);
+  });
+
   test("the database rejects a duplicate slug", async () => {
     const [existing] = await db.select({ slug: person.slug }).from(person).where(eq(person.userId, ids[0] as string));
     // Wrapped in an async function: a Drizzle query is only thenable, not a Promise.

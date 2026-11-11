@@ -7,8 +7,9 @@ import { renderApp } from "@/test/render-app";
 
 type Person = people.PersonInput & { id: string };
 type ImageView = { id: string; name: string; url: string };
-const lena: Person & { theme: people.UpdatePersonInput["theme"] & string; images: ImageView[] } = {
+const lena: Person & { slug: string; theme: people.UpdatePersonInput["theme"] & string; images: ImageView[] } = {
   id: "p-1",
+  slug: "lena-vogt",
   theme: "classic",
   images: [
     { id: "img-1", name: "a.jpg", url: "https://storage.example/a.jpg" },
@@ -142,7 +143,7 @@ describe("Editor", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
     expect(mutateAsync).toHaveBeenCalledTimes(1);
-    const { id: _id, theme: _theme, images: _images, ...expected } = lena;
+    const { id: _id, slug: _slug, theme: _theme, images: _images, ...expected } = lena;
     expect(mutateAsync.mock.calls[0]?.[0]).toEqual({ ...expected, languages: ["Deutsch", "Spanisch"] });
     expect(page().getByRole("button", { name: "Edit Skills" })).toHaveFocus();
   });
@@ -190,32 +191,46 @@ describe("Editor", () => {
     expect(page().getByRole("heading", { level: 1 })).toHaveTextContent("Mara Vogt");
   });
 
-  test("the theme picker previews live, saves with Done and reverts on Escape", async () => {
+  test("picking a theme saves it right away; Escape and Done keep it", async () => {
     renderApp(<Editor personId="p-1" />);
     const user = userEvent.setup();
     const toolbar = within(screen.getByRole("navigation", { name: "Editor" }));
     expect(themeOf()).toBe("classic");
 
-    // Escape discards the preview.
     await user.click(toolbar.getByRole("button", { name: "Change theme" }));
     let drawer = within(await screen.findByRole("dialog", { name: "Theme" }));
     await waitFor(() => expect(drawer.getByRole("radio", { name: "Classic" })).toHaveFocus());
     await user.click(drawer.getByRole("radio", { name: "Midnight" }));
     expect(themeOf()).toBe("midnight");
+    await waitFor(() => expect(mutateAsync).toHaveBeenLastCalledWith({ theme: "midnight" }));
+
+    // Escape only closes: the saved theme stays.
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(themeOf()).toBe("classic");
-    expect(mutateAsync).not.toHaveBeenCalled();
+    expect(themeOf()).toBe("midnight");
 
-    // Done saves the chosen theme.
     await user.click(toolbar.getByRole("button", { name: "Change theme" }));
     drawer = within(await screen.findByRole("dialog", { name: "Theme" }));
     await user.click(drawer.getByRole("radio", { name: "Sunset" }));
+    await waitFor(() => expect(mutateAsync).toHaveBeenLastCalledWith({ theme: "sunset" }));
     await user.click(drawer.getByRole("button", { name: "Done" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(mutateAsync).toHaveBeenCalledWith({ theme: "sunset" });
     expect(themeOf()).toBe("sunset");
+    expect(mutateAsync).toHaveBeenCalledTimes(2);
     expect(toolbar.getByRole("button", { name: "Change theme" })).toHaveFocus();
+  });
+
+  test("a theme that cannot be saved is reverted", async () => {
+    updateFails = true;
+    renderApp(<Editor personId="p-1" />);
+    const user = userEvent.setup();
+    await user.click(within(screen.getByRole("navigation", { name: "Editor" })).getByRole("button", { name: "Change theme" }));
+    const drawer = within(await screen.findByRole("dialog", { name: "Theme" }));
+
+    await user.click(drawer.getByRole("radio", { name: "Noir" }));
+    await waitFor(() => expect(themeOf()).toBe("classic"));
+    expect(drawer.getByRole("radio", { name: "Classic" })).toBeChecked();
+    expect(drawer.getByText("Could not save. Please try again.")).toBeInTheDocument();
   });
 
   test("opens in the person's saved theme", () => {
@@ -247,5 +262,13 @@ describe("Editor", () => {
     personState = { isPending: false, isError: false, data: { ...lena, images: [] }, error: null };
     renderApp(<Editor personId="p-1" />);
     expect(page().getByText("Add photos")).toBeInTheDocument();
+  });
+
+  test("the floating menu links to the person's public page and the dashboard", () => {
+    renderApp(<Editor personId="p-1" />);
+    const toolbar = within(screen.getByRole("navigation", { name: "Editor" }));
+    expect(toolbar.getByRole("link", { name: "View public page (new tab)" })).toHaveAttribute("href", "/en/people/lena-vogt");
+    expect(toolbar.getByRole("link", { name: "View public page (new tab)" })).toHaveAttribute("target", "_blank");
+    expect(toolbar.getByRole("link", { name: "Back to the dashboard" })).toHaveAttribute("href", "/en/dashboard");
   });
 });

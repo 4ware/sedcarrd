@@ -51,5 +51,13 @@
     "aurora": "Glowing banner on a dark card.",
     "clay": "Terracotta banner, earthy tones.",
     "slate": "Slate grey with a yellow banner."
+  },
+  "profile": {
+    "namePlaceholder": "Your name",
+    "aboutPlaceholder": "Professions, year and place of birth",
+    "basics": "Basic data",
+    "born": "{hasYear, select, yes {Born {year}} other {Born}}{hasPlace, select, yes { in {place}} other {}}{hasYear, select, yes { ({age} years)} other {}}",
+    "photosPlaceholder": "Add photos",
+    "photoAlt": "{name}, photo {index}"
   }
 }

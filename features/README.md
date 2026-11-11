@@ -26,7 +26,9 @@ mounted by `app/api/[[...slugs]]/route.ts`). Every API interaction from the UI g
 TanStack Query (`useQuery` / `useMutation`) using the typed Eden client from
 [`lib/api/client.ts`](../lib/api/client.ts) and `unwrap()` from [`lib/api/unwrap.ts`](../lib/api/unwrap.ts).
 Server Components that need data can prefetch the same `queryOptions` with `serverApi`
-([`lib/api/server.ts`](../lib/api/server.ts)), which calls Elysia in-process. Never call `fetch("/api/…")` by hand.
+([`lib/api/server.ts`](../lib/api/server.ts)), which calls Elysia in-process. Hand the prefetched cache to the client with
+`<HydrateQueries state={dehydrate(queryClient)}>` ([`components/providers/hydrate-queries.tsx`](../components/providers/hydrate-queries.tsx)),
+not TanStack's `HydrationBoundary` directly (two copies of the library in dev). Never call `fetch("/api/…")` by hand.
 [`lib/api/hello.ts`](../lib/api/hello.ts) + [`lib/api/use-hello.ts`](../lib/api/use-hello.ts) are the reference example.
 
 Rules:

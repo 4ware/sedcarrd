@@ -76,6 +76,12 @@ export const RegisterImages = t.Object({
   }),
 });
 
+/**
+ * A person as anyone may see them on the public page /people/<slug>: the profile, theme and photos,
+ * without the owner. Lookups are by slug only.
+ */
+export const PublicPerson = PersonDetail;
+
 /** Body of POST /people: the create form's fields. */
 export const CreatePerson = t.Object({
   firstName: personFields.firstName,
@@ -336,5 +342,18 @@ export const peopleRoutes = new Elysia({ name: "routes/people" })
       auth: true,
       params: ImageParams,
       response: { 200: t.Array(PersonImage), 401: Message, 404: Message },
+    },
+  )
+  .get(
+    "/public/people/:slug",
+    async ({ db, params, status }) => {
+      const [found] = await db.select(detailColumns).from(person).where(eq(person.slug, params.slug));
+      if (!found) return status(404, { message: "Person not found" });
+      return { ...found, images: await listImages(db, found.id) };
+    },
+    {
+      // Public: no `auth`. Only the columns in detailColumns leave the server (no userId).
+      params: t.Object({ slug: t.String({ minLength: 1, maxLength: 120 }) }),
+      response: { 200: PublicPerson, 404: Message },
     },
   );
