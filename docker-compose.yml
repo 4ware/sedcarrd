@@ -40,7 +40,7 @@ services:
 
   # S3-compatible object storage (API on :9000, web console on :9001).
   storage:
-    image: rustfs/rustfs:1.0.4
+    image: rustfs/rustfs:1.0.5
     restart: unless-stopped
     environment:
       RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY_ID}
